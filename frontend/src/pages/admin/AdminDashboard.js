@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import Dashboard from "../../components/Dashboard/Dashboard";
+
 import {
     CssBaseline,
     Box,
@@ -8,6 +10,7 @@ import {
     Divider,
     IconButton,
 } from '@mui/material';
+import FeeOverview from '../../components/FeeOverview';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { Navigate, Route, Routes } from 'react-router-dom';
@@ -41,6 +44,8 @@ import AddClass from './classRelated/AddClass';
 import ClassDetails from './classRelated/ClassDetails';
 import ShowClasses from './classRelated/ShowClasses';
 import AccountMenu from '../../components/AccountMenu';
+import ClassWiseOverview from '../../components/ClassWiseOverview';
+import ClsassDetails from '../../components/ClsassDetails';
 
 const AdminDashboard = () => {
     const [open, setOpen] = useState(false);
@@ -97,10 +102,15 @@ const AdminDashboard = () => {
                         <Route path="/Admin/dashboard" element={<AdminHomePage />} />
                         <Route path="/Admin/profile" element={<AdminProfile />} />
                         <Route path="/Admin/complains" element={<SeeComplains />} />
+                        <Route path="/Admin/feeoverview" element={<FeeOverview />} />
+
 
                         {/* Notice */}
                         <Route path="/Admin/addnotice" element={<AddNotice />} />
                         <Route path="/Admin/notices" element={<ShowNotices />} />
+                         
+                        <Route path="/Admin/classwiseoverview" element={<ClassWiseOverview />} />
+                        <Route path="/Admin/clslassdetails/:classId" element={<ClsassDetails />} />
 
                         {/* Subject */}
                         <Route path="/Admin/subjects" element={<ShowSubjects />} />
@@ -135,6 +145,8 @@ const AdminDashboard = () => {
                         <Route path="/Admin/teachers/addteacher/:id" element={<AddTeacher />} />
 
                         <Route path="/logout" element={<Logout />} />
+                        <Route path="/Admin/dashboard-overview" element={<Dashboard />} />
+
                     </Routes>
                 </Box>
             </Box>

@@ -116,4 +116,20 @@ router.delete("/Subject/:id", deleteSubject)
 router.delete("/Subjects/:id", deleteSubjects)
 router.delete("/SubjectsClass/:id", deleteSubjectsByClass)
 
+
+
+const {
+    contestCreate,
+    contestList,
+    getContestDetail,
+    updateContest,
+    deleteContest,
+  } = require('../controllers/contest-controller.js');
+  
+  // Contest Routes
+  router.post('/ContestCreate', contestCreate);
+  router.get('/ContestList/:id', contestList);
+  router.get('/Contest/:id', getContestDetail);
+  router.put('/Contest/:id', updateContest);
+  router.delete('/Contest/:id', deleteContest);
 module.exports = router;

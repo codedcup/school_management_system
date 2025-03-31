@@ -40,70 +40,67 @@ const ClassDetails = () => {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Class {classId} Overview</h2>
-      <div className="flex items-center mb-4">
-        <span className="mr-2">Month:</span>
-        <select className="border p-1">
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">Class {classId} Overview</h2>
+      <div className="flex items-center mb-6 gap-4">
+        <select className="border p-2 rounded">
           {[...Array(12)].map((_, i) => (
             <option key={i + 1} value={i + 1}>{new Date(0, i).toLocaleString('default', { month: 'long' })}</option>
           ))}
         </select>
-        <span className="mx-2">Year:</span>
-        <select className="border p-1">
+        <select className="border p-2 rounded">
           {[2023, 2024, 2025].map((year) => (
             <option key={year} value={year}>{year}</option>
           ))}
         </select>
-        <span className="mx-2">Status:</span>
-        <select className="border p-1">
+        <select className="border p-2 rounded">
           <option value="all">All</option>
           <option value="paid">Paid</option>
           <option value="unpaid">Unpaid</option>
         </select>
-        <input type="text" placeholder="Student Name" className="border p-1 ml-2" />
-        <button className="ml-2 bg-red-500 text-white p-1 rounded">Filters</button>
+        <input type="text" placeholder="Search Student" className="border p-2 rounded" />
+        <button className="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
       </div>
-      <table className="min-w-full bg-white border border-gray-300">
-        <thead>
-          <tr>
-            {['id', 'name', 'feeDue', 'paymentDate', 'status'].map((col) => (
-              <th key={col} className="py-2 px-4 border-b cursor-pointer" onClick={() => handleSort(col)}>
-                {col.charAt(0).toUpperCase() + col.slice(1)} {sortColumn === col && (sortDirection === 'asc' ? '▲' : '▼')}
-              </th>
-            ))}
-            <th className="py-2 px-4 border-b">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedStudents.map((student) => (
-            <tr key={student.id}>
-              <td className="py-2 px-4 border-b">{student.id}</td>
-              <td className="py-2 px-4 border-b">{student.name}</td>
-              <td className="py-2 px-4 border-b">{student.feeDue}</td>
-              <td className="py-2 px-4 border-b">{student.paymentDate || 'N/A'}</td>
-              <td className="py-2 px-4 border-b">{student.status}</td>
-              <td className="py-2 px-4 border-b">
-                <button className="bg-blue-500 text-white p-1 rounded" onClick={() => handleDetailsClick(student)}>
-                  Details
-                </button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
+          <thead>
+            <tr className="bg-blue-500 text-white">
+              {['ID', 'Name', 'Fee Due', 'Payment Date', 'Status'].map((col, index) => (
+                <th key={index} className="py-3 px-4 cursor-pointer" onClick={() => handleSort(col.toLowerCase().replace(' ', ''))}>
+                  {col} {sortColumn === col.toLowerCase().replace(' ', '') && (sortDirection === 'asc' ? '▲' : '▼')}
+                </th>
+              ))}
+              <th className="py-3 px-4">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {sortedStudents.map((student) => (
+              <tr key={student.id} className="border-b hover:bg-gray-100">
+                <td className="py-3 px-4">{student.id}</td>
+                <td className="py-3 px-4">{student.name}</td>
+                <td className="py-3 px-4">₹{student.feeDue}</td>
+                <td className="py-3 px-4">{student.paymentDate || 'N/A'}</td>
+                <td className="py-3 px-4 font-semibold" style={{ color: student.status === 'Paid' ? 'green' : 'red' }}>{student.status}</td>
+                <td className="py-3 px-4">
+                  <button className="bg-green-500 text-white px-3 py-1 rounded" onClick={() => handleDetailsClick(student)}>Details</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {selectedStudent && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-4 rounded shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-2">Student Details</h2>
-            <p><strong>Student Name:</strong> {selectedStudent.name}</p>
-            <p><strong>Date of Payment:</strong> {selectedStudent.paymentDate || 'N/A'}</p>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Student Details</h2>
+            <p><strong>Name:</strong> {selectedStudent.name}</p>
+            <p><strong>Payment Date:</strong> {selectedStudent.paymentDate || 'N/A'}</p>
             <p><strong>Class:</strong> {classId}</p>
             <p><strong>Payment Mode:</strong> Online</p>
-            <p><strong>Amount Paid:</strong> {selectedStudent.feeDue}</p>
-            <p><strong>Amount Pending:</strong> {selectedStudent.status === 'Paid' ? 0 : selectedStudent.feeDue}</p>
-            <p><strong>All Previous Month's Pending Fees:</strong> ₹500 (example)</p>
-            <button className="mt-4 bg-red-500 text-white p-1 rounded" onClick={closeModal}>Close</button>
+            <p><strong>Amount Paid:</strong> ₹{selectedStudent.feeDue}</p>
+            <p><strong>Pending Amount:</strong> {selectedStudent.status === 'Paid' ? '₹0' : `₹${selectedStudent.feeDue}`}</p>
+            <p><strong>Previous Pending Fees:</strong> ₹500 (example)</p>
+            <button className="mt-4 bg-red-500 text-white px-4 py-2 rounded" onClick={closeModal}>Close</button>
           </div>
         </div>
       )}

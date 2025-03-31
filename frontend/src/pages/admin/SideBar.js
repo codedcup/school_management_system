@@ -6,9 +6,9 @@ import {
   ListItemText,
   ListSubheader,
 } from "@mui/material";
-import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
+import SportsTennisIcon from "@mui/icons-material/SportsTennis";
+import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
 import { Link, useLocation } from "react-router-dom";
-import Dashboard from "../../components/Dashboard/Dashboard";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
@@ -50,11 +50,30 @@ const SideBar = () => {
           <ListItemText primary='Dashboard Overview' />
         </ListItemButton>
         <ListItemButton component={Link} to='/Admin/feeoverview'>
-  <ListItemIcon>
-    <AttachMoneyOutlinedIcon color={location.pathname.startsWith("/Admin/feeoverview") ? "primary" : "inherit"} />
-  </ListItemIcon>
-  <ListItemText primary='Fee Overview' />
-</ListItemButton>
+          <ListItemIcon>
+            <AttachMoneyOutlinedIcon
+              color={
+                location.pathname.startsWith("/Admin/feeoverview")
+                  ? "primary"
+                  : "inherit"
+              }
+            />
+          </ListItemIcon>
+          <ListItemText primary='Fee Overview' />
+        </ListItemButton>
+
+        <ListItemButton component={Link} to='/Admin/contests'>
+          <ListItemIcon>
+            <SportsTennisIcon
+              color={
+                location.pathname.startsWith("/Admin/contests")
+                  ? "primary"
+                  : "inherit"
+              }
+            />
+          </ListItemIcon>
+          <ListItemText primary='Contests' />
+        </ListItemButton>
 
         <ListItemButton component={Link} to='/Admin/classes'>
           <ListItemIcon>

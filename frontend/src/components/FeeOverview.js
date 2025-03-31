@@ -11,122 +11,82 @@ import {
 } from "chart.js";
 import { Link } from "react-router-dom";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const options = {
   responsive: true,
   plugins: {
-    legend: {
-      position: "top",
-    },
+    legend: { position: "top" },
     title: {
       display: true,
-      //text: 'Classes trend chart',
-      color: "red",
-      font: {
-        size: 16,
-        family: "sans-serif",
-        style: "normal",
-        lineHeight: 1.2,
-      },
+      color: "#1E293B",
+      font: { size: 18, family: "sans-serif", weight: "bold" },
     },
   },
 };
 
 const labels = ["6", "7", "8", "9", "10"];
-
 const data = {
   labels,
-  datasets: [
-    {
-      label: "Fee Amount",
-      data: [2000, 2500, 3500, 3000, 2800],
-      backgroundColor: "rgba(75, 192, 192, 0.6)",
-    },
-  ],
+  datasets: [{ label: "Fee Amount", data: [2000, 2500, 3500, 3000, 2800], backgroundColor: "#3B82F6" }],
 };
 
 const FeeOverview = () => {
-  const summaryData = {
-    expected: 15000,
-    collected: 9000,
-    pending: 6000,
-  };
+  const summaryData = { expected: 15000, collected: 9000, pending: 6000 };
 
   return (
-    <div className='p-4'>
-      <div className='flex items-center mb-4'>
-        <h2 className='text-3xl font-bold'>FEE OVERVIEW</h2>
-        <div className='ml-auto flex items-center'>
-          <span className='mr-2'>Month:</span>
-          <select className='border p-1'>
-            <option value='1'>January</option>
-            <option value='2'>February</option>
-            <option value='3'>March</option>
-            <option value='4'>April</option>
-            <option value='5'>May</option>
-            <option value='6'>June</option>
-            <option value='7'>July</option>
-            <option value='8'>August</option>
-            <option value='9'>September</option>
-            <option value='10'>October</option>
-            <option value='11'>November</option>
-            <option value='12'>December</option>
-          </select>
-          <span className='mx-2'>Year:</span>
-          <select className='border p-1'>
-            <option value='2023'>2023</option>
-            <option value='2024'>2024</option>
-            <option value='2025'>2025</option>
-          </select>
-          <button className='ml-2 bg-blue-500 text-white p-1 rounded'>
-            Apply Filters
-          </button>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-bold text-gray-700">Fee Overview</h2>
+          <div className="flex items-center space-x-3">
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600">Month</label>
+              <select className="border rounded px-3 py-1">
+                {[
+                  "January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December",
+                ].map((month, index) => (
+                  <option key={index} value={index + 1}>{month}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label className="text-sm text-gray-600">Year</label>
+              <select className="border rounded px-3 py-1">
+                {[2023, 2024, 2025].map((year) => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </div>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Apply Filters</button>
+          </div>
         </div>
       </div>
-      <div className='grid grid-cols-3 gap-4'>
-        <div className='col-span-1 flex flex-col border gap-5 p-4'>
-          <div className='flex justify-between flex-col border gap-3 mb-4'>
-            <span className=' text-lg font-semibold'>
-              Expected: {summaryData.expected}
-            </span>
-            <span className=' text-lg font-bold'>
-              Collected: {summaryData.collected}
-            </span>
-            <span className=' text-lg font-bold'>
-              Pending: {summaryData.pending}
-            </span>
-          </div>
 
-          <div className='mt-10 flex border flex-col p-4 gap-3'>
-            <Link
-              to='/Admin/classwiseoverview'
-              className='bg-blue-500 text-white p-2 rounded'
-            >
-              Class-wise overview
-            </Link>
-            <Link
-              to='/Admin/feesettings'
-              className='bg-blue-500 text-white p-1 mr-2 rounded'
-            >
-              Configure Fee Settings
-            </Link>
-            <Link
-              to='/Admin/setreminders'
-              className='bg-blue-500 text-white p-1 mr-2 rounded'
-            >
-              Set Reminders
-            </Link>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Summary Section */}
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <div className="space-y-3 text-gray-700">
+            <div className="flex justify-between text-lg font-semibold">
+              <span>Expected:</span> <span className="text-gray-900">₹{summaryData.expected}</span>
+            </div>
+            <div className="flex justify-between text-lg font-bold text-green-600">
+              <span>Collected:</span> <span>₹{summaryData.collected}</span>
+            </div>
+            <div className="flex justify-between text-lg font-bold text-red-600">
+              <span>Pending:</span> <span>₹{summaryData.pending}</span>
+            </div>
+          </div>
+          <div className="mt-6 space-y-3">
+            <Link to="/Admin/classwiseoverview" className="block bg-blue-500 hover:bg-blue-600 text-white text-center py-2 rounded shadow">Class-wise Overview</Link>
+            <Link to="/Admin/feesettings" className="block bg-blue-500 hover:bg-blue-600 text-white text-center py-2 rounded shadow">Configure Fee Settings</Link>
+            <Link to="/Admin/setreminders" className="block bg-blue-500 hover:bg-blue-600 text-white text-center py-2 rounded shadow">Set Reminders</Link>
           </div>
         </div>
-        <div className='col-span-2'>
+
+        {/* Chart Section */}
+        <div className="md:col-span-2 bg-white shadow-lg rounded-lg p-6">
           <Bar options={options} data={data} />
         </div>
       </div>

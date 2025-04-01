@@ -1,4 +1,4 @@
-const Sclass = require('../models/sclassSchema.js');
+const Sclass = require('../models/classSchema.js');
 const Student = require('../models/studentSchema.js');
 const Subject = require('../models/subjectSchema.js');
 const Teacher = require('../models/teacherSchema.js');
@@ -6,12 +6,12 @@ const Teacher = require('../models/teacherSchema.js');
 const sclassCreate = async (req, res) => {
     try {
         const sclass = new Sclass({
-            sclassName: req.body.sclassName,
+            className: req.body.className,
             school: req.body.adminID
         });
 
         const existingSclassByName = await Sclass.findOne({
-            sclassName: req.body.sclassName,
+            className: req.body.className,
             school: req.body.adminID
         });
 
@@ -57,7 +57,7 @@ const getSclassDetail = async (req, res) => {
 
 const getSclassStudents = async (req, res) => {
     try {
-        let students = await Student.find({ sclassName: req.params.id })
+        let students = await Student.find({ className: req.params.id })
         if (students.length > 0) {
             let modifiedStudents = students.map((student) => {
                 return { ...student._doc, password: undefined };
@@ -77,8 +77,8 @@ const deleteSclass = async (req, res) => {
         if (!deletedClass) {
             return res.send({ message: "Class not found" });
         }
-        const deletedStudents = await Student.deleteMany({ sclassName: req.params.id });
-        const deletedSubjects = await Subject.deleteMany({ sclassName: req.params.id });
+        const deletedStudents = await Student.deleteMany({ className: req.params.id });
+        const deletedSubjects = await Subject.deleteMany({ className: req.params.id });
         const deletedTeachers = await Teacher.deleteMany({ teachSclass: req.params.id });
         res.send(deletedClass);
     } catch (error) {

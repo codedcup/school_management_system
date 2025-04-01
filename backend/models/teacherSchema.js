@@ -10,23 +10,21 @@ const teacherSchema = new mongoose.Schema({
         unique: true,
         required: true,
     },
+    phone: {
+        type: String,
+        unique: true,
+        required: true
+    },
     password: {
         type: String,
         required: true,
     },
-    role: {
-        type: String,
-        default: "Teacher"
-    },
-    school: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'admin',
-        required: true,
-    },
-    teachSubject: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'subject',
-    },
+    teachSubject: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'subjects',
+        }
+    ],
     teachSclass: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'sclass',

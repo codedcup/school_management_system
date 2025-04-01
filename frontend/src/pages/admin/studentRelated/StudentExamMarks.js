@@ -45,8 +45,8 @@ const StudentExamMarks = ({ situation }) => {
     }, [situation]);
 
     useEffect(() => {
-        if (userDetails && userDetails.sclassName && situation === "Student") {
-            dispatch(getSubjectList(userDetails.sclassName._id, "ClassSubjects"));
+        if (userDetails && userDetails.className && situation === "Student") {
+            dispatch(getSubjectList(userDetails.className._id, "ClassSubjects"));
         }
     }, [dispatch, userDetails]);
 

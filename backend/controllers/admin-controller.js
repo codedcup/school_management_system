@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const Admin = require('../models/adminSchema.js');
-const Sclass = require('../models/sclassSchema.js');
+const Sclass = require('../models/classSchema.js');
 const Student = require('../models/studentSchema.js');
 const Teacher = require('../models/teacherSchema.js');
 const Subject = require('../models/subjectSchema.js');

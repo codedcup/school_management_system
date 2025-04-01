@@ -34,7 +34,7 @@ const teacherLogIn = async (req, res) => {
             if (validated) {
                 teacher = await teacher.populate("teachSubject", "subName sessions")
                 teacher = await teacher.populate("school", "schoolName")
-                teacher = await teacher.populate("teachSclass", "sclassName")
+                teacher = await teacher.populate("teachSclass", "className")
                 teacher.password = undefined;
                 res.send(teacher);
             } else {
@@ -52,7 +52,7 @@ const getTeachers = async (req, res) => {
     try {
         let teachers = await Teacher.find({ school: req.params.id })
             .populate("teachSubject", "subName")
-            .populate("teachSclass", "sclassName");
+            .populate("teachSclass", "className");
         if (teachers.length > 0) {
             let modifiedTeachers = teachers.map((teacher) => {
                 return { ...teacher._doc, password: undefined };
@@ -71,7 +71,7 @@ const getTeacherDetail = async (req, res) => {
         let teacher = await Teacher.findById(req.params.id)
             .populate("teachSubject", "subName sessions")
             .populate("school", "schoolName")
-            .populate("teachSclass", "sclassName")
+            .populate("teachSclass", "className")
         if (teacher) {
             teacher.password = undefined;
             res.send(teacher);
@@ -142,7 +142,7 @@ const deleteTeachers = async (req, res) => {
 
 const deleteTeachersByClass = async (req, res) => {
     try {
-        const deletionResult = await Teacher.deleteMany({ sclassName: req.params.id });
+        const deletionResult = await Teacher.deleteMany({ className: req.params.id });
 
         const deletedCount = deletionResult.deletedCount || 0;
 
@@ -151,7 +151,7 @@ const deleteTeachersByClass = async (req, res) => {
             return;
         }
 
-        const deletedTeachers = await Teacher.find({ sclassName: req.params.id });
+        const deletedTeachers = await Teacher.find({ className: req.params.id });
 
         await Subject.updateMany(
             { teacher: { $in: deletedTeachers.map(teacher => teacher._id) }, teacher: { $exists: true } },

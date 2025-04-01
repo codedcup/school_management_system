@@ -221,7 +221,7 @@ const ClassDetails = () => {
                     Class Details
                 </Typography>
                 <Typography variant="h5" gutterBottom>
-                    This is Class {sclassDetails && sclassDetails.sclassName}
+                    This is Class {sclassDetails && sclassDetails.className}
                 </Typography>
                 <Typography variant="h6" gutterBottom>
                     Number of Subjects: {numberOfSubjects}

@@ -36,8 +36,8 @@ const ViewStudent = () => {
     }, [dispatch, studentID])
 
     useEffect(() => {
-        if (userDetails && userDetails.sclassName && userDetails.sclassName._id !== undefined) {
-            dispatch(getSubjectList(userDetails.sclassName._id, "ClassSubjects"));
+        if (userDetails && userDetails.className && userDetails.className._id !== undefined) {
+            dispatch(getSubjectList(userDetails.className._id, "ClassSubjects"));
         }
     }, [dispatch, userDetails]);
 
@@ -47,7 +47,7 @@ const ViewStudent = () => {
     const [name, setName] = useState('');
     const [rollNum, setRollNum] = useState('');
     const [password, setPassword] = useState('');
-    const [sclassName, setSclassName] = useState('');
+    const [className, setclassName] = useState('');
     const [studentSchool, setStudentSchool] = useState('');
     const [subjectMarks, setSubjectMarks] = useState('');
     const [subjectAttendance, setSubjectAttendance] = useState([]);
@@ -83,7 +83,7 @@ const ViewStudent = () => {
         if (userDetails) {
             setName(userDetails.name || '');
             setRollNum(userDetails.rollNum || '');
-            setSclassName(userDetails.sclassName || '');
+            setclassName(userDetails.className || '');
             setStudentSchool(userDetails.school || '');
             setSubjectMarks(userDetails.examResult || '');
             setSubjectAttendance(userDetails.attendance || []);
@@ -346,7 +346,7 @@ const ViewStudent = () => {
                 <br />
                 Roll Number: {userDetails.rollNum}
                 <br />
-                Class: {sclassName.sclassName}
+                Class: {className.className}
                 <br />
                 School: {studentSchool.schoolName}
                 {

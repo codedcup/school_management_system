@@ -20,7 +20,7 @@ const subjectCreate = async (req, res) => {
         } else {
             const newSubjects = subjects.map((subject) => ({
                 ...subject,
-                sclassName: req.body.sclassName,
+                className: req.body.className,
                 school: req.body.adminID,
             }));
 
@@ -35,7 +35,7 @@ const subjectCreate = async (req, res) => {
 const allSubjects = async (req, res) => {
     try {
         let subjects = await Subject.find({ school: req.params.id })
-            .populate("sclassName", "sclassName")
+            .populate("className", "className")
         if (subjects.length > 0) {
             res.send(subjects)
         } else {
@@ -48,7 +48,7 @@ const allSubjects = async (req, res) => {
 
 const classSubjects = async (req, res) => {
     try {
-        let subjects = await Subject.find({ sclassName: req.params.id })
+        let subjects = await Subject.find({ className: req.params.id })
         if (subjects.length > 0) {
             res.send(subjects)
         } else {
@@ -61,7 +61,7 @@ const classSubjects = async (req, res) => {
 
 const freeSubjectList = async (req, res) => {
     try {
-        let subjects = await Subject.find({ sclassName: req.params.id, teacher: { $exists: false } });
+        let subjects = await Subject.find({ className: req.params.id, teacher: { $exists: false } });
         if (subjects.length > 0) {
             res.send(subjects);
         } else {
@@ -76,7 +76,7 @@ const getSubjectDetail = async (req, res) => {
     try {
         let subject = await Subject.findById(req.params.id);
         if (subject) {
-            subject = await subject.populate("sclassName", "sclassName")
+            subject = await subject.populate("className", "className")
             subject = await subject.populate("teacher", "name")
             res.send(subject);
         }
@@ -140,7 +140,7 @@ const deleteSubjects = async (req, res) => {
 
 const deleteSubjectsByClass = async (req, res) => {
     try {
-        const deletedSubjects = await Subject.deleteMany({ sclassName: req.params.id });
+        const deletedSubjects = await Subject.deleteMany({ className: req.params.id });
 
         // Set the teachSubject field to null in teachers
         await Teacher.updateMany(

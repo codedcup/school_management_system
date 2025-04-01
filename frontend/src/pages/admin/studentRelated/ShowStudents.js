@@ -57,14 +57,14 @@ const ShowStudents = () => {
     const studentColumns = [
         { id: 'name', label: 'Name', minWidth: 170 },
         { id: 'rollNum', label: 'Roll Number', minWidth: 100 },
-        { id: 'sclassName', label: 'Class', minWidth: 170 },
+        { id: 'className', label: 'Class', minWidth: 170 },
     ]
 
     const studentRows = studentsList && studentsList.length > 0 && studentsList.map((student) => {
         return {
             name: student.name,
             rollNum: student.rollNum,
-            sclassName: student.sclassName.sclassName,
+            className: student.className.className,
             id: student._id,
         };
     })

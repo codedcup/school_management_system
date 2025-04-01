@@ -32,7 +32,7 @@ const AddTeacher = () => {
   const role = "Teacher"
   const school = subjectDetails && subjectDetails.school
   const teachSubject = subjectDetails && subjectDetails._id
-  const teachSclass = subjectDetails && subjectDetails.sclassName && subjectDetails.sclassName._id
+  const teachSclass = subjectDetails && subjectDetails.className && subjectDetails.className._id
 
   const fields = { name, email, password, role, school, teachSubject, teachSclass }
 
@@ -69,7 +69,7 @@ const AddTeacher = () => {
             Subject : {subjectDetails && subjectDetails.subName}
           </label>
           <label>
-            Class : {subjectDetails && subjectDetails.sclassName && subjectDetails.sclassName.sclassName}
+            Class : {subjectDetails && subjectDetails.className && subjectDetails.className.className}
           </label>
           <label>Name</label>
           <input className="registerInput" type="text" placeholder="Enter teacher's name..."

@@ -162,7 +162,7 @@ const ViewSubject = () => {
           Number of Students: {numberOfStudents}
         </Typography>
         <Typography variant="h6" gutterBottom>
-          Class Name : {subjectDetails && subjectDetails.sclassName && subjectDetails.sclassName.sclassName}
+          Class Name : {subjectDetails && subjectDetails.className && subjectDetails.className.className}
         </Typography>
         {subjectDetails && subjectDetails.teacher ?
           <Typography variant="h6" gutterBottom>

@@ -1,183 +1,172 @@
-import * as React from "react";
+// --- Sidebar Component ---
+import React, { useState } from "react";
 import {
   Divider,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Collapse,
+  List,
 } from "@mui/material";
-import SportsTennisIcon from "@mui/icons-material/SportsTennis";
-import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
 import { Link, useLocation } from "react-router-dom";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import HomeIcon from "@mui/icons-material/Home";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import AnnouncementOutlinedIcon from "@mui/icons-material/AnnouncementOutlined";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import ClassOutlinedIcon from "@mui/icons-material/ClassOutlined";
-import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccountOutlined";
-import ReportIcon from "@mui/icons-material/Report";
-import AssignmentIcon from "@mui/icons-material/Assignment";
+import SubjectIcon from "@mui/icons-material/Subject";
+import GroupWorkIcon from "@mui/icons-material/GroupWork";
+import LayersIcon from "@mui/icons-material/Layers";
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import WorkIcon from "@mui/icons-material/Work";
+import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+import PaymentIcon from "@mui/icons-material/Payment";
+import SchoolIcon from "@mui/icons-material/School";
+import PersonIcon from "@mui/icons-material/Person";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import SettingsIcon from "@mui/icons-material/Settings";
 
-const SideBar = () => {
+const Sidebar = () => {
   const location = useLocation();
+  const [openMasterData, setOpenMasterData] = useState(true);
+  const [openAcademic, setOpenAcademic] = useState(true);
+  const [openStudent, setOpenStudent] = useState(true);
+  const [openTeacher, setOpenTeacher] = useState(true);
+  const [openFinance, setOpenFinance] = useState(true);
+
+  const getColor = (path) =>
+    location.pathname.startsWith(path) ? "primary" : "inherit";
+
   return (
     <>
-      <React.Fragment>
-        <ListItemButton component={Link} to='/'>
-          <ListItemIcon>
-            <HomeIcon
-              color={
-                location.pathname === ("/" || "/Admin/dashboard")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Home' />
-        </ListItemButton>
-        <ListItemButton component={Link} to='/Admin/dashboard-overview'>
-          <ListItemIcon>
-            <DashboardIcon
-              color={
-                location.pathname.startsWith("/Admin/dashboard-overview")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Dashboard Overview' />
-        </ListItemButton>
-        <ListItemButton component={Link} to='/Admin/feeoverview'>
-          <ListItemIcon>
-            <AttachMoneyOutlinedIcon
-              color={
-                location.pathname.startsWith("/Admin/feeoverview")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Fee Overview' />
-        </ListItemButton>
+      {/* Master Data */}
+      
+      <ListItemButton onClick={() => setOpenMasterData(!openMasterData)}>
+        <ListItemIcon><ClassOutlinedIcon /></ListItemIcon>
+        <ListItemText primary="Master Data" />
+        {/* {openMasterData ? <ExpandLess /> : <ExpandMore />} */}
+      </ListItemButton>
+      <Collapse in={openMasterData} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItemButton component={Link} to="/Admin/classes" sx={{ pl: 4 }}>
+            <ListItemIcon><ClassOutlinedIcon color={getColor("/Admin/classes")} /></ListItemIcon>
+            <ListItemText primary="Classes" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/Admin/sections" sx={{ pl: 4 }}>
+            <ListItemIcon><LayersIcon color={getColor("/Admin/sections")} /></ListItemIcon>
+            <ListItemText primary="Sections" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/Admin/streams" sx={{ pl: 4 }}>
+            <ListItemIcon><GroupWorkIcon color={getColor("/Admin/streams")} /></ListItemIcon>
+            <ListItemText primary="Streams" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/Admin/subjects" sx={{ pl: 4 }}>
+            <ListItemIcon><SubjectIcon color={getColor("/Admin/subjects")} /></ListItemIcon>
+            <ListItemText primary="Subjects" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/Admin/designations" sx={{ pl: 4 }}>
+            <ListItemIcon><WorkIcon color={getColor("/Admin/designations")} /></ListItemIcon>
+            <ListItemText primary="Designations" />
+          </ListItemButton>
+        </List>
+      </Collapse>
 
-        <ListItemButton component={Link} to='/Admin/contests'>
-          <ListItemIcon>
-            <SportsTennisIcon
-              color={
-                location.pathname.startsWith("/Admin/contests")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Contests' />
-        </ListItemButton>
-
-        <ListItemButton component={Link} to='/Admin/classes'>
-          <ListItemIcon>
-            <ClassOutlinedIcon
-              color={
-                location.pathname.startsWith("/Admin/classes")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Classes' />
-        </ListItemButton>
-        <ListItemButton component={Link} to='/Admin/subjects'>
-          <ListItemIcon>
-            <AssignmentIcon
-              color={
-                location.pathname.startsWith("/Admin/subjects")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Subjects' />
-        </ListItemButton>
-        <ListItemButton component={Link} to='/Admin/teachers'>
-          <ListItemIcon>
-            <SupervisorAccountOutlinedIcon
-              color={
-                location.pathname.startsWith("/Admin/teachers")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Teachers' />
-        </ListItemButton>
-        <ListItemButton component={Link} to='/Admin/students'>
-          <ListItemIcon>
-            <PersonOutlineIcon
-              color={
-                location.pathname.startsWith("/Admin/students")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Students' />
-        </ListItemButton>
-        <ListItemButton component={Link} to='/Admin/notices'>
-          <ListItemIcon>
-            <AnnouncementOutlinedIcon
-              color={
-                location.pathname.startsWith("/Admin/notices")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Notices' />
-        </ListItemButton>
-        <ListItemButton component={Link} to='/Admin/complains'>
-          <ListItemIcon>
-            <ReportIcon
-              color={
-                location.pathname.startsWith("/Admin/complains")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Complains' />
-        </ListItemButton>
-      </React.Fragment>
+      {/* Academic Setup */}
       <Divider sx={{ my: 1 }} />
-      <React.Fragment>
-        <ListSubheader component='div' inset>
-          User
-        </ListSubheader>
-        <ListItemButton component={Link} to='/Admin/profile'>
-          <ListItemIcon>
-            <AccountCircleOutlinedIcon
-              color={
-                location.pathname.startsWith("/Admin/profile")
-                  ? "primary"
-                  : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Profile' />
-        </ListItemButton>
-        <ListItemButton component={Link} to='/logout'>
-          <ListItemIcon>
-            <ExitToAppIcon
-              color={
-                location.pathname.startsWith("/logout") ? "primary" : "inherit"
-              }
-            />
-          </ListItemIcon>
-          <ListItemText primary='Logout' />
-        </ListItemButton>
-      </React.Fragment>
+      
+      <ListItemButton onClick={() => setOpenAcademic(!openAcademic)}>
+        <ListItemIcon><AccountTreeIcon /></ListItemIcon>
+        <ListItemText primary="Academic Setup" />
+        {/* {openAcademic ? <ExpandLess /> : <ExpandMore />} */}
+      </ListItemButton>
+      <Collapse in={openAcademic} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItemButton component={Link} to="/Admin/class-subject-assignment" sx={{ pl: 4 }}>
+            <ListItemIcon><AccountTreeIcon color={getColor("/Admin/class-subject-assignment")} /></ListItemIcon>
+            <ListItemText primary="Class-Subject Assignment" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/Admin/class-teacher-assignment" sx={{ pl: 4 }}>
+            <ListItemIcon><AssignmentIndIcon color={getColor("/Admin/class-teacher-assignment")} /></ListItemIcon>
+            <ListItemText primary="Class Teacher Assignment" />
+          </ListItemButton>
+        </List>
+      </Collapse>
+
+      {/* Student Management */}
+      <Divider sx={{ my: 1 }} />
+      
+      <ListItemButton onClick={() => setOpenStudent(!openStudent)}>
+        <ListItemIcon><SchoolIcon /></ListItemIcon>
+        <ListItemText primary="Student Management" />
+        {/* {openStudent ? <ExpandLess /> : <ExpandMore />} */}
+      </ListItemButton>
+      <Collapse in={openStudent} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItemButton component={Link} to="/Admin/addstudents" sx={{ pl: 4 }}>
+            <ListItemIcon><PersonAddIcon color={getColor("/Admin/addstudents")} /></ListItemIcon>
+            <ListItemText primary="Student Registration" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/Admin/students" sx={{ pl: 4 }}>
+            <ListItemIcon><SchoolIcon color={getColor("/Admin/students")} /></ListItemIcon>
+            <ListItemText primary="Student Directory" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/Admin/feeoverview" sx={{ pl: 4 }}>
+            <ListItemIcon><PaymentIcon color={getColor("/Admin/feeoverview")} /></ListItemIcon>
+            <ListItemText primary="Fee Management" />
+          </ListItemButton>
+        </List>
+      </Collapse>
+
+      {/* Teacher Management */}
+      <Divider sx={{ my: 1 }} />
+      
+      <ListItemButton onClick={() => setOpenTeacher(!openTeacher)}>
+        <ListItemIcon><SupervisorAccountIcon /></ListItemIcon>
+        <ListItemText primary="Teacher Management" />
+        {/* {openTeacher ? <ExpandLess /> : <ExpandMore />} */}
+      </ListItemButton>
+      <Collapse in={openTeacher} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItemButton component={Link} to="/Admin/teachers/addteacher" sx={{ pl: 4 }}>
+            <ListItemIcon><PersonIcon color={getColor("/Admin/teachers/addteacher")} /></ListItemIcon>
+            <ListItemText primary="Teacher Registration" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/Admin/teachers" sx={{ pl: 4 }}>
+            <ListItemIcon><SupervisorAccountIcon color={getColor("/Admin/teachers")} /></ListItemIcon>
+            <ListItemText primary="Teacher Directory" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/Admin/salarymanagement" sx={{ pl: 4 }}>
+            <ListItemIcon><AccountBalanceWalletIcon color={getColor("/Admin/salarymanagement")} /></ListItemIcon>
+            <ListItemText primary="Salary Management" />
+          </ListItemButton>
+        </List>
+      </Collapse>
+
+      {/* Finance */}
+      <Divider sx={{ my: 1 }} />
+      
+      <ListItemButton onClick={() => setOpenFinance(!openFinance)}>
+        <ListItemIcon><SettingsIcon /></ListItemIcon>
+        <ListItemText primary="Finance" />
+        {/* {openFinance ? <ExpandLess /> : <ExpandMore />} */}
+      </ListItemButton>
+      <Collapse in={openFinance} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItemButton component={Link} to="/Admin/feecategorysetup" sx={{ pl: 4 }}>
+            <ListItemIcon><SettingsIcon color={getColor("/Admin/feecategorysetup")} /></ListItemIcon>
+            <ListItemText primary="Fee Setup" />
+          </ListItemButton>
+          <ListItemButton component={Link} to="/Admin/salarysetup" sx={{ pl: 4 }}>
+            <ListItemIcon><SettingsApplicationsIcon color={getColor("/Admin/salarysetup")} /></ListItemIcon>
+            <ListItemText primary="Salary Setup" />
+          </ListItemButton>
+        </List>
+      </Collapse>
     </>
   );
 };
 
-export default SideBar;
+export default Sidebar;

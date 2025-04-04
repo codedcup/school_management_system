@@ -46,6 +46,14 @@ import ShowClasses from "./classRelated/ShowClasses";
 import AccountMenu from "../../components/AccountMenu";
 import ClassWiseOverview from "../../components/ClassWiseOverview";
 import ClsassDetails from "../../components/ClsassDetails";
+import Streams from "../../components/Streams";
+import Designations from "../../components/Designations";
+import ClassSubjectAssignment from "../../components/ClassSubjectAssignment";
+import ClassTeacherAssignment from "../../components/ClassTeacherAssignment";
+import SalaryManagement from "../../components/SalaryManagement";
+import FeeCategorySetup from "../../components/FeeCategorySetup";
+import SalarySetup from "../../components/SalarySetup";
+import Sections from "../../components/Sections";
 
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -199,6 +207,26 @@ const AdminDashboard = () => {
             />
 
             <Route path='/Admin/contests' element={<Contests />} />
+            <Route path='/Admin/sections' element={<Sections />} />
+            <Route path='/Admin/streams' element={<Streams />} />
+            <Route path='/Admin/designations' element={<Designations />} />
+            <Route
+              path='/Admin/class-subject-assignment'
+              element={<ClassSubjectAssignment />}
+            />
+            <Route
+              path='/Admin/class-teacher-assignment'
+              element={<ClassTeacherAssignment />}
+            />
+            <Route
+              path='/Admin/salarymanagement'
+              element={<SalaryManagement />}
+            />
+            <Route
+              path='/Admin/feecategorysetup'
+              element={<FeeCategorySetup />}
+            />
+            <Route path='/Admin/salarysetup' element={<SalarySetup />} />
 
             <Route path='/logout' element={<Logout />} />
             <Route path='/Admin/dashboard-overview' element={<Dashboard />} />

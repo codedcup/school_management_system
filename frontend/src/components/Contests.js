@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllContests, addContest } from '../redux/ContestRelated/contestHandle';
+import { useSelector } from 'react-redux';
 import { FaCalendarAlt, FaBook, FaClock, FaUpload, FaQuestionCircle } from 'react-icons/fa';
 import Popup from '../components/Popup';
 
 const Contests = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { contests, loading, error, response } = useSelector((state) => state.contest);
   const { currentUser } = useSelector((state) => state.user);
 
   const adminID = currentUser._id;
-  console.log(adminID)
 
   const [showForm, setShowForm] = useState(false);
+  const [contests, setContests] = useState([]);
   const [formData, setFormData] = useState({
     thumbnail: null,
     title: '',
@@ -45,8 +42,10 @@ const Contests = () => {
   ];
 
   useEffect(() => {
-    dispatch(getAllContests(adminID));
-  }, [dispatch, adminID]);
+    // Load contests from localStorage on component mount
+    const storedContests = JSON.parse(localStorage.getItem('contests')) || [];
+    setContests(storedContests);
+  }, []);
 
   const handleInputChange = (e) => {
     try {
@@ -69,7 +68,12 @@ const Contests = () => {
             setErrors({ ...errors, thumbnail: 'Image must be at least 300x200 pixels.' });
           } else {
             setErrors({ ...errors, thumbnail: '' });
-            setFormData({ ...formData, thumbnail: file });
+            
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              setFormData({ ...formData, thumbnail: reader.result });
+            };
+            reader.readAsDataURL(file);
           }
         };
       } else if (type === 'checkbox') {
@@ -106,20 +110,33 @@ const Contests = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     if (formData.status) {
       setShowConfirmDialog(true);
     } else {
-      await submitContest();
+      submitContest();
     }
   };
 
-  const submitContest = async () => {
+  const submitContest = () => {
     try {
-      const result = await dispatch(addContest(formData)).unwrap();
+      const newContest = {
+        _id: Date.now().toString(), // Simple unique ID generator
+        ...formData,
+        registrations: 0,
+        status: formData.status ? 'LIVE' : 'DRAFT',
+        thumbnail: formData.thumbnail // Already converted to base64
+      };
+
+      // Update contests in state and localStorage
+      const updatedContests = [...contests, newContest];
+      setContests(updatedContests);
+      localStorage.setItem('contests', JSON.stringify(updatedContests));
+
+      // Reset form and navigate
       setShowForm(false);
       setFormData({
         thumbnail: null,
@@ -140,9 +157,9 @@ const Contests = () => {
         adminID,
       });
       setShowConfirmDialog(false);
-      navigate(`/Admin/contests/contest/${result._id}`);
+      navigate(`/Admin/contests/contest/${newContest._id}`);
     } catch (err) {
-      setMessage(err || 'Failed to create contest');
+      setMessage('Failed to create contest');
       setShowPopup(true);
     }
   };
@@ -168,7 +185,6 @@ const Contests = () => {
             <div>
               <h4 className="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Contest Details</h4>
               <div className="space-y-4">
-                {/* Thumbnail */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Thumbnail (300x200px, max 2MB, .jpg/.png)</label>
                   <div className="relative">
@@ -184,7 +200,6 @@ const Contests = () => {
                   {errors.thumbnail && <p className="mt-1 text-sm text-red-700 bg-red-100 p-2 rounded">{errors.thumbnail}</p>}
                 </div>
 
-                {/* Title */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Title (max 100 characters)</label>
                   <input
@@ -199,7 +214,6 @@ const Contests = () => {
                   {errors.title && <p className="mt-1 text-sm text-red-700 bg-red-100 p-2 rounded">{errors.title}</p>}
                 </div>
 
-                {/* Description */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description (max 5000 characters)</label>
                   <textarea
@@ -214,7 +228,6 @@ const Contests = () => {
                   {errors.description && <p className="mt-1 text-sm text-red-700 bg-red-100 p-2 rounded">{errors.description}</p>}
                 </div>
 
-                {/* Date and Time */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Date and Time (must be 3 days in future)</label>
                   <div className="relative">
@@ -237,7 +250,6 @@ const Contests = () => {
             <div>
               <h4 className="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Exam Settings</h4>
               <div className="space-y-4">
-                {/* Syllabus */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Syllabus</label>
                   <button
@@ -254,7 +266,6 @@ const Contests = () => {
                   )}
                 </div>
 
-                {/* Syllabus Modal */}
                 {showSyllabusModal && (
                   <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center transition-opacity duration-300">
                     <div className="bg-white rounded-lg p-6 max-w-md w-full transform transition-all duration-300 scale-100">
@@ -298,7 +309,6 @@ const Contests = () => {
                   </div>
                 )}
 
-                {/* Eligibility Criteria */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Eligibility Criteria</label>
                   <input
@@ -312,7 +322,6 @@ const Contests = () => {
                   {errors.eligibility && <p className="mt-1 text-sm text-red-700 bg-red-100 p-2 rounded">{errors.eligibility}</p>}
                 </div>
 
-                {/* Number of Questions */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">No. of Questions</label>
                   <div className="relative">
@@ -330,26 +339,6 @@ const Contests = () => {
                   {errors.numQuestions && <p className="mt-1 text-sm text-red-700 bg-red-100 p-2 rounded">{errors.numQuestions}</p>}
                 </div>
 
-                {/* Paper Upload/Generate */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Upload Paper or Generate</label>
-                  <div className="flex space-x-4">
-                    <button
-                      type="button"
-                      className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300"
-                    >
-                      Upload Paper
-                    </button>
-                    <button
-                      type="button"
-                      className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300"
-                    >
-                      Generate Using Our Services
-                    </button>
-                  </div>
-                </div>
-
-                {/* Marks per Question */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Marks for Question</label>
                   <input
@@ -364,7 +353,6 @@ const Contests = () => {
                   {errors.marksPerQuestion && <p className="mt-1 text-sm text-red-700 bg-red-100 p-2 rounded">{errors.marksPerQuestion}</p>}
                 </div>
 
-                {/* Negative Marking */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Negative Marking</label>
                   <div className="flex items-center">
@@ -395,7 +383,6 @@ const Contests = () => {
                   )}
                 </div>
 
-                {/* Duration of Exam */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Duration of Exam (in minutes)</label>
                   <div className="relative">
@@ -415,11 +402,9 @@ const Contests = () => {
               </div>
             </div>
 
-            {/* Result and Disclosure Settings Section */}
             <div>
               <h4 className="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Result and Disclosure Settings</h4>
               <div className="space-y-4">
-                {/* Result Disclosure */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Result, Scholarship, Rank to be Disclosed</label>
                   <div className="flex space-x-4">
@@ -448,7 +433,6 @@ const Contests = () => {
                   </div>
                 </div>
 
-                {/* Show Solutions */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Show Solutions to Students</label>
                   <div className="flex space-x-4">
@@ -479,7 +463,6 @@ const Contests = () => {
               </div>
             </div>
 
-            {/* Status Section */}
             <div>
               <h4 className="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">Status</h4>
               <div className="flex items-center">
@@ -494,18 +477,15 @@ const Contests = () => {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="flex justify-end">
               <button
                 type="submit"
                 className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition duration-300"
-                disabled={loading}
               >
-                {loading ? 'Submitting...' : 'Submit Contest'}
+                Submit Contest
               </button>
             </div>
 
-            {/* Confirmation Dialog */}
             {showConfirmDialog && (
               <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center transition-opacity duration-300">
                 <div className="bg-white rounded-lg p-6 max-w-sm w-full transform transition-all duration-300 scale-100">
@@ -534,54 +514,48 @@ const Contests = () => {
         </div>
       ) : (
         <div className="bg-white shadow-lg rounded-lg p-6">
-          {loading ? (
-            <p>Loading contests...</p>
-          ) : error ? (
-            <p>Error: {error}</p>
-          ) : (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                  <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                  <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. of Registrations</th>
-                  <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {contests.map((contest) => (
-                  <tr key={contest._id}>
-                    <td className="py-4 px-6 text-sm text-gray-900">{contest.title}</td>
-                    <td className="py-4 px-6 text-sm text-gray-500">{new Date(contest.dateTime).toLocaleString()}</td>
-                    <td className="py-4 px-6 text-sm">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          contest.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                        }`}
-                      >
-                        {contest.status}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-sm text-gray-500">{contest.registrations}</td>
-                    <td className="py-4 px-6 text-sm">
-                      {contest.status === 'DRAFT' && (
-                        <button className="bg-indigo-600 text-white px-3 py-1 rounded-md mr-2 hover:bg-indigo-700 transition duration-300">
-                          Edit
-                        </button>
-                      )}
-                      <button
-                        onClick={() => navigate(`/Admin/contests/contest/${contest._id}`)}
-                        className="bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition duration-300"
-                      >
-                        Details
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. of Registrations</th>
+                <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {contests.map((contest) => (
+                <tr key={contest._id}>
+                  <td className="py-4 px-6 text-sm text-gray-900">{contest.title}</td>
+                  <td className="py-4 px-6 text-sm text-gray-500">{new Date(contest.dateTime).toLocaleString()}</td>
+                  <td className="py-4 px-6 text-sm">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        contest.status === 'LIVE' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}
+                    >
+                      {contest.status}
+                    </span>
+                  </td>
+                  <td className="py-4 px-6 text-sm text-gray-500">{contest.registrations}</td>
+                  <td className="py-4 px-6 text-sm">
+                    {contest.status === 'DRAFT' && (
+                      <button className="bg-indigo-600 text-white px-3 py-1 rounded-md mr-2 hover:bg-indigo-700 transition duration-300">
+                        Edit
                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                    )}
+                    <button
+                      onClick={() => navigate(`/Admin/contests/contest/${contest._id}`)}
+                      className="bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition duration-300"
+                    >
+                      Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
       <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />

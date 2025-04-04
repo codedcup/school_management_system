@@ -1,9 +1,28 @@
 const mongoose = require("mongoose");
 
 const ClassSubjectAssignments = new mongoose.Schema({
-    className: {
-        type: String,
+    classId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'classes',
         required: true,
+    },
+    sectionId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "sections",
+        required: true
+    },
+    streamId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "streans",
+        required: true
+    },
+    subjectId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'subjects',
+        required: true,
+    },
+    subjectCode: {
+        type: String
     },
     status: {
         type: String,

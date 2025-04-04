@@ -16,12 +16,18 @@ const adminSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: "Admin"
+        enum: ["SuperAdmin", "admin"],
+        default: "admin"
     },
     schoolName: {
         type: String,
         unique: true,
         required: true
+    },
+    status: {
+        type: String,
+        enum: ["active", "inactive"],
+        default: "active"
     }
 });
 

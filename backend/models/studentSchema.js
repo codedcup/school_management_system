@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema({
+    // Basic Information
     name: {
+        type: String,
+        required: true
+    },
+    studentId: {
         type: String,
         required: true
     },
@@ -9,52 +14,74 @@ const studentSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    class: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "classSubjectAssignments",
+        required: true
+    },
     password: {
         type: String,
         required: true
     },
-    sclassName: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'sclass',
-        required: true,
-    },
-    school: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'admin',
-        required: true,
-    },
-    role: {
+
+    // Contact Information
+    phone: {
         type: String,
-        default: "Student"
+        required: true
     },
-    examResult: [
-        {
-            subName: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'subject',
-            },
-            marksObtained: {
-                type: Number,
-                default: 0
-            }
-        }
-    ],
-    attendance: [{
-        date: {
-            type: Date,
-            required: true
-        },
-        status: {
-            type: String,
-            enum: ['Present', 'Absent'],
-            required: true
-        },
-        subName: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'subject',
-            required: true
-        }
-    }]
+    email: {
+        type: String,
+        required: true
+    },
+    primaryContactMode: {
+        type: String,
+        enum: ['phone', 'email'],
+        default: 'phone'
+    },
+    address: {
+        type: String
+    },
+
+    // Family Information
+    fatherName: {
+        type: String
+    },
+    motherName: {
+        type: String
+    },
+    fatherOccupation: {
+        type: String
+    },
+    motherOccupation: {
+        type: String
+    },
+
+    // Personal & Health Information
+    bloodGroup: {
+        type: String
+    },
+    medicalCondition: {
+        type: String
+    },
+    identityProof: {
+        type: String
+    },
+    photo: {
+        type: String
+    },
+
+    // Academic Lifecycle
+    dateOfAdmission: {
+        type: Date
+    },
+    dateOfLeaving: {
+        type: Date
+    },
+    status: {
+        type: String,
+        enum: ["active", "inactive"],
+        default: "actives"
+    }
 });
 
-module.exports = mongoose.model("student", studentSchema);
+module.exports = mongoose.model("students", studentSchema, "students");

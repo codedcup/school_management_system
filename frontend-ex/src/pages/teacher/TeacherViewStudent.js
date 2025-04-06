@@ -28,7 +28,7 @@ const TeacherViewStudent = () => {
     if (response) { console.log(response) }
     else if (error) { console.log(error) }
 
-    const [sclassName, setSclassName] = useState('');
+    const [className, setclassName] = useState('');
     const [studentSchool, setStudentSchool] = useState('');
     const [subjectMarks, setSubjectMarks] = useState('');
     const [subjectAttendance, setSubjectAttendance] = useState([]);
@@ -44,7 +44,7 @@ const TeacherViewStudent = () => {
 
     useEffect(() => {
         if (userDetails) {
-            setSclassName(userDetails.sclassName || '');
+            setclassName(userDetails.className || '');
             setStudentSchool(userDetails.school || '');
             setSubjectMarks(userDetails.examResult || '');
             setSubjectAttendance(userDetails.attendance || []);
@@ -72,7 +72,7 @@ const TeacherViewStudent = () => {
                     <br />
                     Roll Number: {userDetails.rollNum}
                     <br />
-                    Class: {sclassName.sclassName}
+                    Class: {className.className}
                     <br />
                     School: {studentSchool.schoolName}
                     <br /><br />

@@ -10,7 +10,7 @@ import Classroom from "../../../assets/classroom.png";
 import styled from "styled-components";
 
 const AddClass = () => {
-    const [sclassName, setSclassName] = useState("");
+    const [className, setclassName] = useState("");
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -26,7 +26,7 @@ const AddClass = () => {
     const [showPopup, setShowPopup] = useState(false);
 
     const fields = {
-        sclassName,
+        className,
         adminID,
     };
 
@@ -72,9 +72,9 @@ const AddClass = () => {
                             <TextField
                                 label="Create a class"
                                 variant="outlined"
-                                value={sclassName}
+                                value={className}
                                 onChange={(event) => {
-                                    setSclassName(event.target.value);
+                                    setclassName(event.target.value);
                                 }}
                                 required
                             />

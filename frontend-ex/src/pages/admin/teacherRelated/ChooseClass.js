@@ -36,7 +36,7 @@ const ChooseClass = ({ situation }) => {
 
     const sclassRows = sclassesList && sclassesList.length > 0 && sclassesList.map((sclass) => {
         return {
-            name: sclass.sclassName,
+            name: sclass.className,
             id: sclass._id,
         };
     })

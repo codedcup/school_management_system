@@ -1,6 +1,7 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const teacherSchema = new mongoose.Schema({
+    // Basic Information
     name: {
         type: String,
         required: true,
@@ -10,40 +11,75 @@ const teacherSchema = new mongoose.Schema({
         unique: true,
         required: true,
     },
+    phone: {
+        type: String,
+        unique: true,
+        required: true,
+    },
     password: {
         type: String,
         required: true,
     },
-    role: {
+
+    // Professional Information
+    designation: {
         type: String,
-        default: "Teacher"
     },
-    school: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'admin',
-        required: true,
-    },
-    teachSubject: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'subject',
-    },
-    teachSclass: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'sclass',
-        required: true,
-    },
-    attendance: [{
-        date: {
-            type: Date,
-            required: true
-        },
-        presentCount: {
-            type: String,
-        },
-        absentCount: {
-            type: String,
+    teachSubject: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'subjects',
         }
-    }]
+    ],
+    teachClass: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'classes',
+        }
+    ],
+    employmentType: {
+        type: String,
+        enum: ["contract", "permanent"],
+        default: "permanent"
+    },
+    dateOfJoining: {
+        type: Date,
+    },
+    dateOfLeaving: {
+        type: Date,
+    },
+    contractStartDate: {
+        type: Date,
+    },
+    contractEndDate: {
+        type: Date,
+    },
+
+    // Personal Information
+    address: {
+        type: String,
+    },
+    bloodGroup: {
+        type: String,
+    },
+
+    // Emergency Contact
+    emergencyContactName: {
+        type: String,
+    },
+    emergencyContactPhone: {
+        type: String,
+    },
+
+    // Identity Proof
+    identityProof: {
+        type: String,
+    },
+    status: {
+        type: String,
+        enum: ["active", "inactive"],
+        default: "actives"
+    }
 }, { timestamps: true });
 
-module.exports = mongoose.model("teacher", teacherSchema)
+module.exports = mongoose.model("teacher", teacherSchema);

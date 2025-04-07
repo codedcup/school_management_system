@@ -5,12 +5,14 @@ type Props = {
     actions?: Action[]
 }
 
+type variant = "filled" | "outlined" | "gradient" | "text";
+
 type Action = {
     label: string,
     onClick?: () => void,
     bgColor?: string,
     icon?: any,
-    variant?: string
+    variant?: variant
 }
 
 export default function ActionBar({ className, actions }: Props) {

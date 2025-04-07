@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Input,
   Button,
   Dialog,
+  Select,
+  Option,
   IconButton,
   Typography,
   DialogBody,
@@ -10,55 +12,78 @@ import {
   DialogFooter,
 } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
- 
 
-export default function AddClassForm({open, handleOpen} : any) {
- 
-    const handleSubmit = () => {
-        //API call 
+type Props = {
+  open: boolean,
+  editData?: { class: string, status: statusOptions },
+  onClose: () => void
+}
 
-        //success 
-        
+type statusOptions = "active" | "inactive";
+
+export default function AddClassForm({ open, editData, onClose }: Props) {
+  const [className, setClassName] = useState<String>('');
+  const [status, setStatus] = useState<statusOptions>("active");
+  const [editMode, setEditMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (editData) {
+      setEditMode(true);
+      setClassName(editData.class);
+      setStatus(editData.status);
     }
+  }, [editData]);
+
+  const handleClose = () => {
+    setClassName("");
+    setStatus("active");
+    setEditMode(false);
+    onClose();
+  }
+
+  const handleSubmit = () => {
+    if (validate()) {
+      console.log(className + " | " + status);
+      handleClose();
+    } else {
+      alert("input validation failed");
+    }
+  }
+
+  const validate = () => {
+    return true;
+  }
 
   return (
     <>
-      <Dialog size="sm" open={open} handler={handleOpen} className="p-4">
+      <Dialog size="sm" open={open} handler={handleClose} className="p-4">
+
         <DialogHeader className="relative m-0 block">
           <Typography variant="h4" color="blue-gray">
-            Link Payment Card
+            Add Class
           </Typography>
           <Typography className="mt-1 font-normal text-gray-600">
-            Complete the form below with your card details to link your card.
+            Subheader of add class
           </Typography>
           <IconButton
             size="sm"
             variant="text"
             className="!absolute right-3.5 top-3.5"
-            onClick={handleOpen}
+            onClick={handleClose}
           >
             <XMarkIcon className="h-4 w-4 stroke-2" />
           </IconButton>
         </DialogHeader>
+
         <DialogBody className="space-y-4 pb-6">
-          <Button
-            fullWidth
-            variant="outlined"
-            className="h-12 border-blue-500 focus:ring-blue-100/50"
-          >
-            <img
-              src="/icons/Paypal icon.svg"
-              className="mx-auto grid h-12 w-16 -translate-y-7 place-items-center"
-              alt="paypal"
-            />
-          </Button>
+
           <div>
             <Typography
               variant="small"
               color="blue-gray"
               className="mb-2 text-left font-medium"
             >
-              Cardholder Name
+              Class Name
             </Typography>
             <Input
               color="gray"
@@ -72,82 +97,42 @@ export default function AddClassForm({open, handleOpen} : any) {
               labelProps={{
                 className: "hidden",
               }}
+              value={className}
+              onChange={(e: any) => setClassName(e.target.value)}
             />
           </div>
+
           <div>
             <Typography
               variant="small"
               color="blue-gray"
               className="mb-2 text-left font-medium"
             >
-              Card Number
+              Status
             </Typography>
-            <Input
-              color="gray"
-              size="lg"
-              placeholder="1234 5678 9012 3456"
-              name="number"
-              className="placeholder:opacity-100 focus:!border-t-gray-900"
-              containerProps={{
-                className: "!min-w-full",
-              }}
-              labelProps={{
-                className: "hidden",
-              }}
-            />
+            <Select
+              labelProps={{ className: "hidden" }}
+              value={status}
+              onChange={(val: statusOptions) => setStatus(val)}
+            >
+              <Option value="active">Active</Option>
+              <Option value="inactive" default>Inactive</Option>
+            </Select>
           </div>
-          <div className="flex gap-4">
-            <div className="w-full">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="mb-2 text-left font-medium"
-              >
-                Expiration Date
-              </Typography>
-              <Input
-                color="gray"
-                size="lg"
-                placeholder="MM/YY"
-                name="date"
-                className="placeholder:opacity-100 focus:!border-t-gray-900"
-                containerProps={{
-                  className: "!min-w-full",
-                }}
-                labelProps={{
-                  className: "hidden",
-                }}
-              />
-            </div>
-            <div className="w-full">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="mb-2 text-left font-medium"
-              >
-                CVV
-              </Typography>
-              <Input
-                color="gray"
-                size="lg"
-                placeholder="123"
-                name="CVV"
-                className="placeholder:opacity-100 focus:!border-t-gray-900"
-                containerProps={{
-                  className: "!min-w-full",
-                }}
-                labelProps={{
-                  className: "hidden",
-                }}
-              />
-            </div>
-          </div>
+
         </DialogBody>
+
         <DialogFooter>
-          <Button className="ml-auto" onClick={handleOpen}>
-            submit
-          </Button>
+          <div className="inline-flex gap-4 text-right">
+            <Button variant="text" className="ml-auto" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button className="ml-auto" onClick={handleSubmit}>
+              Submit
+            </Button>
+          </div>
         </DialogFooter>
+
       </Dialog>
     </>
   );

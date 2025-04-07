@@ -15,15 +15,16 @@ type Action = {
 
 export default function ActionBar({ className, actions }: Props) {
     return (
-        <div className={`py-3 px-4 mb-2 bg-gray-200 ${className}`}>
+        <div className={`py-3 px-4 mb-4 bg-white ${className}`}>
             <div className="inline-flex gap-2">
                 {
                     actions && actions.map((v: Action) => {
                         return <Button
                             onClick={v.onClick}
                             key={v.label}
-                            variant={`${v.variant}`}
-                            className={`flex gap-2 ${v.bgColor}`}>
+                            variant={v.variant ? v.variant : "filled"}
+                            className={`flex gap-2 ${v.bgColor}`}
+                            >
                             {v.label} {v.icon}
                         </Button>
                     })

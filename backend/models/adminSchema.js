@@ -19,11 +19,6 @@ const adminSchema = new mongoose.Schema({
         enum: ["SuperAdmin", "admin"],
         default: "admin"
     },
-    schoolName: {
-        type: String,
-        unique: true,
-        required: true
-    },
     status: {
         type: String,
         enum: ["active", "inactive"],
@@ -31,4 +26,4 @@ const adminSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("admin", adminSchema)
+module.exports = mongoose.model("admin", adminSchema, "admin")

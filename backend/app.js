@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const authMiddleware = require('./middlewares/authMiddleware.js');
+const { authMiddleware } = require('./middlewares/authMiddleware.js');
 
 const app = express();
 connectDB();
@@ -24,7 +24,7 @@ const studentRoutes = require('./routes/studentRoutes.js');
 const subjectRoutes = require('./routes/subjectRoutes.js');
 const teacherRoutes = require('./routes/teacherRoutes.js');
 
-app.use('/api/auth', authMiddleware, authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/admin', authMiddleware, adminRoutes);
 app.use('/api/assignment', authMiddleware, assignmentRoutes);
 app.use('/api/class', authMiddleware, classRoutes);

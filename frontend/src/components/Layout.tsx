@@ -1,5 +1,6 @@
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import { Outlet } from "react-router-dom";
 
 const Layout = ({ children }: any) => {
     return (
@@ -12,7 +13,8 @@ const Layout = ({ children }: any) => {
                 </div>
                 
                 <div className="flex-1 p-4 bg-gray-200 overflow-y-auto overflow-x-hidden">
-                    {children}
+                    {/* {children} */}
+                    <Outlet />
                 </div>
             </div>
         </div>

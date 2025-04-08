@@ -25,7 +25,7 @@ exports.getById = async (req, res) => {
 // POST create new admin (force role to "admin")
 exports.create = async (req, res) => {
     try {
-        const { name, email, password, schoolName } = req.body;
+        const { name, email, password } = req.body;
 
         const hashedPassword = await hashPassword(password);
 
@@ -33,13 +33,14 @@ exports.create = async (req, res) => {
         const newAdmin = new Admin({
             name,
             email,
-            hashedPassword,
-            schoolName,
+            password: hashedPassword,
             role: "admin"
         });
 
         const saved = await newAdmin.save();
-        res.status(201).json(saved);
+        const savedAdmin = saved.toObject();
+        delete savedAdmin.password;
+        res.status(201).json(savedAdmin);
     } catch (error) {
         res.status(400).json({ error: 'Invalid data or duplicate entry' });
     }

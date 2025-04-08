@@ -14,7 +14,10 @@ exports.loginAdmin = async (req, res) => {
         if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
 
         const token = generateToken({ id: admin._id, role: admin.role, type: 'admin' });
-        res.json({ token, user: admin });
+
+        const adminObj = admin.toObject();
+        delete adminObj.password;
+        res.json({ token, user: adminObj });
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
     }

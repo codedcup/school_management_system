@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Typography,
   List,
@@ -19,6 +19,8 @@ import {
   PowerIcon,
 } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import ConfirmDialog from "./ConfirmDialog";
 
 // Define a TypeScript type for our route items.
 type RouteItem = {
@@ -35,7 +37,7 @@ const routes: RouteItem[] = [
   {
     id: 1,
     title: "Dashboard",
-    url: "dashboard",
+    url: "acc",
     icon: PresentationChartBarIcon,
     children: [
       { id: 11, title: "Overview", url: "overview", icon: ChevronRightIcon },
@@ -44,7 +46,7 @@ const routes: RouteItem[] = [
   {
     id: 2,
     title: "Master Data",
-    url: "master",
+    url: "acc/master",
     icon: ShoppingBagIcon,
     children: [
       { id: 21, title: "Classes", url: "classes", icon: ChevronRightIcon },
@@ -57,7 +59,7 @@ const routes: RouteItem[] = [
   {
     id: 3,
     title: "Academic Setup",
-    url: "academic",
+    url: "acc/academic",
     icon: ShoppingBagIcon,
     children: [
       { id: 31, title: "Class-Subject Assignment", url: "class-subject-assignment", icon: ChevronRightIcon },
@@ -67,7 +69,7 @@ const routes: RouteItem[] = [
   {
     id: 4,
     title: "Student Management",
-    url: "student",
+    url: "acc/student",
     icon: ShoppingBagIcon,
     children: [
       { id: 41, title: "Student Registration", url: "registration", icon: ChevronRightIcon },
@@ -78,7 +80,7 @@ const routes: RouteItem[] = [
   {
     id: 5,
     title: "Teacher Management",
-    url: "teacher",
+    url: "acc/teacher",
     icon: ShoppingBagIcon,
     children: [
       { id: 51, title: "Teacher Registration", url: "registration", icon: ChevronRightIcon },
@@ -89,7 +91,7 @@ const routes: RouteItem[] = [
   {
     id: 6,
     title: "Finance",
-    url: "finance",
+    url: "acc/finance",
     icon: ShoppingBagIcon,
     children: [
       { id: 61, title: "Fee Setup", url: "fee-setup", icon: ChevronRightIcon },
@@ -99,21 +101,24 @@ const routes: RouteItem[] = [
   {
     id: 7,
     title: "Settings",
-    url: "settings",
+    url: "acc/settings",
     icon: Cog6ToothIcon,
   },
-  {
-    id: 8,
-    title: "Log Out",
-    url: "logout",
-    icon: PowerIcon,
-  },
+  // {
+  //   id: 8,
+  //   title: "Log Out",
+  //   url: "logout",
+  //   icon: PowerIcon,
+  // },
 ];
 
 export default function Sidebar() {
   const location = useLocation();
   // This state keeps track of which accordion is open.
   const [open, setOpen] = React.useState<number>(0);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+
+  const {logout} = useAuth();
 
   // Automatically open the accordion if one of its children is active.
   React.useEffect(() => {
@@ -134,6 +139,11 @@ export default function Sidebar() {
     const fullPath = childUrl ? `/${route.url}/${childUrl}` : `/${route.url}`;
     return location.pathname === fullPath;
   };
+
+  const handleLogout = () => {
+    setShowDialog(false);
+    logout();
+  }
 
   return (
     <div className="h-[100vh] w-[17rem] py-4 px-2 bg-white shadow-xl shadow-blue-gray-900/5">
@@ -158,9 +168,8 @@ export default function Sidebar() {
                   icon={
                     <ChevronDownIcon
                       strokeWidth={2.5}
-                      className={`mx-auto h-4 w-4 transition-transform ${
-                        open === route.id ? "rotate-180" : ""
-                      }`}
+                      className={`mx-auto h-4 w-4 transition-transform ${open === route.id ? "rotate-180" : ""
+                        }`}
                     />
                   }
                 >
@@ -191,11 +200,10 @@ export default function Sidebar() {
                           to={`/${route.url}/${child.url}`}
                         >
                           <ListItem
-                            className={`py-2 ${
-                              isActiveRoute(route, child.url)
-                                ? "bg-gray-900 text-white"
-                                : ""
-                            }`}
+                            className={`py-2 ${isActiveRoute(route, child.url)
+                              ? "bg-gray-900 text-white"
+                              : ""
+                              }`}
                           >
                             <ListItemPrefix>
                               <ChevronRightIcon
@@ -222,9 +230,8 @@ export default function Sidebar() {
             return (
               <Link key={route.id} to={`/${route.url}`}>
                 <ListItem
-                  className={`max-w-100 py-2 ${
-                    isActiveRoute(route) ? "bg-gray-900 text-white" : ""
-                  }`}
+                  className={`max-w-100 py-2 ${isActiveRoute(route) ? "bg-gray-900 text-white" : ""
+                    }`}
                 >
                   <ListItemPrefix>
                     <route.icon className="h-5 w-5" />
@@ -250,8 +257,29 @@ export default function Sidebar() {
               </Link>
             );
           })}
+
+          <ListItem
+            className={`max-w-100 py-2`}
+            onClick={() => setShowDialog(true)}>
+            <ListItemPrefix>
+              <PowerIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            <Typography
+              color="blue-gray"
+              className="mr-auto text-sm font-normal"
+            >
+              {"Logout"}
+            </Typography>
+          </ListItem>
         </List>
       </div>
+
+      <ConfirmDialog
+      title="Are you sure?"
+      message="Are you sure to logout?"
+      open={showDialog}
+      onCancel={() => setShowDialog(false)}
+      onAccept={handleLogout} />
     </div>
   );
 }

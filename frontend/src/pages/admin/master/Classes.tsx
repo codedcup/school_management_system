@@ -3,24 +3,24 @@ import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/ou
 import Table from "../../../components/Table";
 import { useState } from "react";
 import AddClassForm from "../../../components/forms/AddClassForm";
+import { ClassResponseType } from "../../../utilities/types";
+import { GET_ALL_CLASSES } from "../../../api/endpoints";
+import { useApiQuery } from "../../../api/apiService";
 
 export default function Classes() {
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [editData, setEditData] = useState<any>({});
 
-    const sampleData = [
-        {
-            id: 1,
-            class: "11th",
-            status: "inactive",
-        },
-        {
-            id: 2,
-            class: "12th",
-            status: "active",
-        },
-    ];
+
+    // Fetch the classes data using the react-query hook.
+    // The data is of type ClassResponseType.
+    const { data: tableData, error, isLoading } = useApiQuery<ClassResponseType>(
+        ['classes'],
+        GET_ALL_CLASSES
+    );
+
+    console.log(tableData);
 
     const columns = [
         {
@@ -76,7 +76,7 @@ export default function Classes() {
                 ]} />
 
             <Table
-                data={sampleData}
+                data={tableData}
                 columns={columns}
                 searchable={true}
                 selectable={true}

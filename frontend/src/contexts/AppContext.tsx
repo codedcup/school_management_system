@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { AdminUserDataType } from '../utilities/interfaces';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { AdminUserDataType } from '../utilities/types';
 
 interface AppContextType {
     user: AdminUserDataType | undefined;
@@ -13,10 +13,23 @@ interface AppProviderProps {
 }
 
 export const AppProvider = ({ children }: AppProviderProps) => {
-    const [user, setUser] = useState<AdminUserDataType | undefined>(undefined);
+    // Initialize user state from localStorage on mount
+    const [user, setUserState] = useState<AdminUserDataType | undefined>(() => {
+        const storedUser = localStorage.getItem('userDetails');
+        return storedUser ? JSON.parse(storedUser) : undefined;
+    });
 
-    // Data available with this context
-    const contextData = { user, setUser };
+    // Custom setter function to update state and localStorage simultaneously
+    const setUser = (data: AdminUserDataType | undefined) => {
+        setUserState(data);
+        if (data) {
+            localStorage.setItem('userDetails', JSON.stringify(data));
+        } else {
+            localStorage.removeItem('userDetails');
+        }
+    };
+
+    const contextData: AppContextType = { user, setUser };
 
     return (
         <AppContext.Provider value={contextData}>
@@ -27,6 +40,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 
 export const useAppContext = () => {
     const context = useContext(AppContext);
-    if (!context) throw new Error('useAppContext must be used within an AppProvider');
+    if (!context) {
+        throw new Error('useAppContext must be used within an AppProvider');
+    }
     return context;
 };

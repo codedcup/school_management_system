@@ -2,7 +2,7 @@ import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 
 
 // Create an Axios instance with a base URL and default headers
 const apiClient: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api', // Replace with your API base URL
+  baseURL: 'http://localhost:5000/api/', // Replace with your API base URL
   timeout: 10000, // 10 seconds timeout
   headers: {
     'Content-Type': 'application/json',
@@ -12,7 +12,7 @@ const apiClient: AxiosInstance = axios.create({
 // Request interceptor to include the authentication token from storage
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('authToken'); // or use your global state
+    const token = localStorage.getItem('token'); // or use your global state
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }

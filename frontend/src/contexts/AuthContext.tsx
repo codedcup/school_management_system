@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = () => {
     setTokenState(null);
-    localStorage.removeItem('token');
+    localStorage.clear()
   }
 
   // Optional: synchronize state with localStorage on mount

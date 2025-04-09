@@ -22,7 +22,7 @@ type Props = {
 type statusOptions = "active" | "inactive";
 
 export default function AddClassForm({ open, editData, onClose }: Props) {
-  const [className, setClassName] = useState<String>('');
+  const [className, setClassName] = useState<string>('');
   const [status, setStatus] = useState<statusOptions>("active");
   const [editMode, setEditMode] = useState<boolean>(false);
 

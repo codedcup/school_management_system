@@ -1,19 +1,22 @@
-import { Typography } from "@material-tailwind/react";
-import { Input } from "@material-tailwind/react";
-import { CardFooter } from "@material-tailwind/react";
-import { Button } from "@material-tailwind/react";
-import { Checkbox } from "@material-tailwind/react";
-import { CardBody } from "@material-tailwind/react";
-import { CardHeader } from "@material-tailwind/react";
-import { Card } from "@material-tailwind/react";
+import {
+    Typography,
+    Input,
+    CardFooter,
+    Button,
+    Checkbox,
+    CardBody,
+    CardHeader,
+    Card
+} from "@material-tailwind/react";
 import { useEffect, useState } from "react";
-import { callApi } from "../../api/callApi";
-import { useAuth } from "../../contexts/AuthContext";
-import { useAppContext } from "../../contexts/AppContext";
-import { AdminLoginResponseType } from "../../utilities/interfaces";
 import { Link } from "react-router-dom";
 import { HomeIcon } from "@heroicons/react/24/outline";
 
+import { AdminLoginResponseType } from "../../utilities/types";
+import { useAppContext } from "../../contexts/AppContext";
+import { useApiMutation } from "../../api/apiService";
+import { useAuth } from "../../contexts/AuthContext";
+import { LOGIN_ADMIN, LOGIN_STUDENT, LOGIN_TEACHER } from "../../api/endpoints";
 
 type Props = {
     loginType: "Admin" | "Teacher" | "Student"
@@ -21,9 +24,9 @@ type Props = {
 
 export default function LoginForm({ loginType }: Props) {
 
-    const [email, setEmail] = useState<String>("");
-    const [password, setPassword] = useState<String>("");
-    const [errorMessage, setErrorMessage] = useState<String>('');
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     const { setToken } = useAuth();
     const { setUser } = useAppContext();
@@ -32,25 +35,11 @@ export default function LoginForm({ loginType }: Props) {
         setErrorMessage("");
     }, [email, password])
 
-    const handleSubmit = () => {
-
-        if (validate()) {
-            setErrorMessage("");
-
-            callApi<AdminLoginResponseType>(getUrlForLoginType(), "POST", { email: email, password })
-                .then((response) => {
-                    setToken(response.token);
-                    setUser(response.user);
-                })
-                .catch(() => setErrorMessage("Incorrect Email/Password!"))
-        }
-    }
-
     const getUrlForLoginType = () => {
         switch (loginType) {
-            case "Admin": return "/auth/admin/login";
-            case "Teacher": return "/auth/teacher/login";
-            default: return "/auth/student/login";
+            case "Admin": return LOGIN_ADMIN;
+            case "Teacher": return LOGIN_TEACHER;
+            default: return LOGIN_STUDENT;
         }
     }
 
@@ -67,6 +56,28 @@ export default function LoginForm({ loginType }: Props) {
 
         return true;
     }
+
+    // 👉 Setup API mutation hook
+    const loginMutation = useApiMutation<AdminLoginResponseType, { email: string, password: string }>(
+        getUrlForLoginType(),
+        'POST',
+        {
+            onSuccess: (data) => {
+                setToken(data.token);
+                setUser(data.user);
+            },
+            onError: () => {
+                setErrorMessage("Incorrect Email/Password!");
+            },
+        }
+    );
+
+    const handleSubmit = () => {
+        if (validate()) {
+            setErrorMessage('');
+            loginMutation.mutate({ email, password });
+        }
+    };
 
     return (
         <div className="flex h-screen w-screen bg-gray-300">
@@ -99,12 +110,14 @@ export default function LoginForm({ loginType }: Props) {
                     </CardHeader>
                     <CardBody className="flex flex-col gap-4">
                         <Input
+                            type="email"
                             label="Email"
                             size="lg"
                             value={email}
-                            onChange={(e: any) => setEmail(e.target.value)}
+                            onChange={(e: any) => setEmail(e.target.value.toLowerCase())}
                         />
                         <Input
+                            type="password"
                             label="Password"
                             size="lg"
                             value={password}

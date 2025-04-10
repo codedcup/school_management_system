@@ -10,7 +10,7 @@ const connectDB = async () => {
 
     // delete mongoose.connection.models['admin'];
 
-    console.log(mongoose.connection.models);
+    // console.log(mongoose.connection);
 
 
     console.log(`Connected to MongoDB: ${connection.connection.host}`);

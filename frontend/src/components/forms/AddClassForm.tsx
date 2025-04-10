@@ -1,17 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  Input,
-  Button,
-  Dialog,
-  Select,
-  Option,
-  IconButton,
-  Typography,
-  DialogBody,
-  DialogHeader,
-  DialogFooter,
-} from "@material-tailwind/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useApiMutation } from "../../api/apiService";
+import { ADD_NEW_CLASS } from "../../api/endpoints";
+import InputGroup from "../InputGroup";
+import FormDialog from "../FormDialog";
+import InputField from "../InputField";
+import { Option } from "@material-tailwind/react";
 
 type Props = {
   open: boolean,
@@ -23,19 +16,21 @@ type statusOptions = "active" | "inactive";
 
 export default function AddClassForm({ open, editData, onClose }: Props) {
   const [className, setClassName] = useState<string>('');
-  const [status, setStatus] = useState<statusOptions>("active");
+  const [status, setStatus] = useState<statusOptions>('active');
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [classError, setClassError] = useState<string>("");
 
-  useEffect(() => {
-    if (editData) {
-      setEditMode(true);
-      setClassName(editData.class);
-      setStatus(editData.status);
-    }
-  }, [editData]);
+  // useEffect(() => {
+  //   if (editData) {
+  //     setEditMode(true);
+  //     setClassName(editData.class);
+  //     setStatus(editData.status);
+  //   }
+  // }, [editData]);
 
   const handleClose = () => {
     setClassName("");
+    setClassError("");
     setStatus("active");
     setEditMode(false);
     onClose();
@@ -45,95 +40,60 @@ export default function AddClassForm({ open, editData, onClose }: Props) {
     if (validate()) {
       console.log(className + " | " + status);
       handleClose();
-    } else {
-      alert("input validation failed");
     }
   }
 
   const validate = () => {
+    if (!className.trim()) {
+      setClassError("Class Name Required!");
+      return false;
+    }
+
     return true;
+  }
+
+  const handleClassChange = (val: string) => {
+    setClassError("");
+    setClassName(val);
+  }
+
+  const handleStatusChange = (val: statusOptions) => {
+    setStatus(val);
   }
 
   return (
     <>
-      <Dialog size="sm" open={open} handler={handleClose} className="p-4">
+      <FormDialog
+        isOpen={open}
+        title="Add Class"
+        subtitle="Add class form subtitle here"
+        onClose={handleClose}
+        onSubmit={handleSubmit}>
 
-        <DialogHeader className="relative m-0 block">
-          <Typography variant="h4" color="blue-gray">
-            Add Class
-          </Typography>
-          <Typography className="mt-1 font-normal text-gray-600">
-            Subheader of add class
-          </Typography>
-          <IconButton
-            size="sm"
-            variant="text"
-            className="!absolute right-3.5 top-3.5"
-            onClick={handleClose}
-          >
-            <XMarkIcon className="h-4 w-4 stroke-2" />
-          </IconButton>
-        </DialogHeader>
+        <InputGroup>
+          <InputField
+            label="Class Name"
+            error={classError}
+            value={className}
+            onChange={handleClassChange} />
+        </InputGroup>
 
-        <DialogBody className="space-y-4 pb-6">
+        <p>
+          Status: {status}
+        </p>
 
-          <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="mb-2 text-left font-medium"
-            >
-              Class Name
-            </Typography>
-            <Input
-              color="gray"
-              size="lg"
-              placeholder="e.g., John Doe"
-              name="name"
-              className="placeholder:opacity-100 focus:!border-t-gray-900"
-              containerProps={{
-                className: "!min-w-full",
-              }}
-              labelProps={{
-                className: "hidden",
-              }}
-              value={className}
-              onChange={(e: any) => setClassName(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="mb-2 text-left font-medium"
-            >
-              Status
-            </Typography>
-            <Select
-              labelProps={{ className: "hidden" }}
-              value={status}
-              onChange={(val: statusOptions) => setStatus(val)}
-            >
+        <InputGroup>
+          <InputField
+            label="Status"
+            type="Select"
+            value={status}
+            onChange={handleStatusChange}>
               <Option value="active">Active</Option>
-              <Option value="inactive" default>Inactive</Option>
-            </Select>
-          </div>
+              <Option value="inactive">Inactive</Option>
+          </InputField>
+        </InputGroup>
 
-        </DialogBody>
-
-        <DialogFooter>
-          <div className="inline-flex gap-4 text-right">
-            <Button variant="text" className="ml-auto" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button className="ml-auto" onClick={handleSubmit}>
-              Submit
-            </Button>
-          </div>
-        </DialogFooter>
-
-      </Dialog>
+      </FormDialog>
     </>
   );
 }

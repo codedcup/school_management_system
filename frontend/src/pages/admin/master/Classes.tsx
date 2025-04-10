@@ -12,15 +12,10 @@ export default function Classes() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [editData, setEditData] = useState<any>({});
 
-
-    // Fetch the classes data using the react-query hook.
-    // The data is of type ClassResponseType.
-    const { data: tableData, error, isLoading } = useApiQuery<ClassResponseType>(
+    const { data: tableData, error, isLoading } = useApiQuery<any>(
         ['classes'],
         GET_ALL_CLASSES
     );
-
-    console.log(tableData);
 
     const columns = [
         {

@@ -42,4 +42,4 @@ const SchoolFeeSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model("schoolfees", salarySchema, "schoolfees");
+module.exports = mongoose.model("schoolfees", SchoolFeeSchema, "schoolfees");

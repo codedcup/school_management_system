@@ -3,7 +3,7 @@ import { useApiMutation } from "../../api/apiService";
 import { ADD_NEW_CLASS } from "../../api/endpoints";
 import InputGroup from "../InputGroup";
 import FormDialog from "../FormDialog";
-import InputField from "../InputField";
+import InputField from "../inputField";
 import { Option } from "@material-tailwind/react";
 
 type Props = {
@@ -28,6 +28,20 @@ export default function AddClassForm({ open, editData, onClose }: Props) {
   //   }
   // }, [editData]);
 
+  const addClassMutation = useApiMutation<any, { class: string, status: statusOptions }>(
+    ADD_NEW_CLASS,
+    'POST',
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        handleClose();
+      },
+      onError: () => {
+        
+      },
+    }
+  );
+
   const handleClose = () => {
     setClassName("");
     setClassError("");
@@ -38,8 +52,7 @@ export default function AddClassForm({ open, editData, onClose }: Props) {
 
   const handleSubmit = () => {
     if (validate()) {
-      console.log(className + " | " + status);
-      handleClose();
+      addClassMutation.mutate({class: className, status: status});
     }
   }
 
@@ -70,28 +83,22 @@ export default function AddClassForm({ open, editData, onClose }: Props) {
         onClose={handleClose}
         onSubmit={handleSubmit}>
 
-        <InputGroup>
-          <InputField
-            label="Class Name"
-            error={classError}
-            value={className}
-            onChange={handleClassChange} />
-        </InputGroup>
+        <InputField
+          label="Class Name"
+          error={classError}
+          value={className}
+          onChange={handleClassChange} />
 
-        <p>
-          Status: {status}
-        </p>
+        <InputField
+          label="Status"
+          type="Select"
+          value={status}
+          onChange={handleStatusChange} >
 
-        <InputGroup>
-          <InputField
-            label="Status"
-            type="Select"
-            value={status}
-            onChange={handleStatusChange}>
-              <Option value="active">Active</Option>
-              <Option value="inactive">Inactive</Option>
-          </InputField>
-        </InputGroup>
+          <Option value="active">Active</Option>
+          <Option value="inactive">Inactive</Option>
+
+        </InputField>
 
       </FormDialog>
     </>

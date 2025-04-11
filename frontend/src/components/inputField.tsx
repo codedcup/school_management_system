@@ -50,7 +50,7 @@ const InputField: FC<Props> = ({
         <Typography className="font-semibold mb-1 pl-1">{label}</Typography>
         <Input
           variant="static"
-          className="border-2 border-b-2 border-gray-400 pt-2 px-3 focus:border-gray-900 rounded-lg"
+          className="border-2 border-b-2 border-gray-400 pb-4 px-3 focus:border-gray-900 rounded-lg"
           value={value}
           name={name}
           placeholder={placeholder}

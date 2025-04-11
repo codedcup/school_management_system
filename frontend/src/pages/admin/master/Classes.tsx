@@ -10,7 +10,7 @@ import { useApiQuery } from "../../../api/apiService";
 export default function Classes() {
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [editData, setEditData] = useState<any>({});
+    const [editData, setEditData] = useState<any>(undefined);
 
     const { data: tableData, error, isLoading } = useApiQuery<any>(
         ['classes'],

@@ -20,13 +20,13 @@ export default function AddClassForm({ open, editData, onClose }: Props) {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [classError, setClassError] = useState<string>("");
 
-  // useEffect(() => {
-  //   if (editData) {
-  //     setEditMode(true);
-  //     setClassName(editData.class);
-  //     setStatus(editData.status);
-  //   }
-  // }, [editData]);
+  useEffect(() => {
+    if (editData) {
+      setEditMode(true);
+      setClassName(editData.class);
+      setStatus(editData.status);
+    }
+  }, [editData]);
 
   const addClassMutation = useApiMutation<any, { class: string, status: statusOptions }>(
     ADD_NEW_CLASS,
@@ -78,6 +78,7 @@ export default function AddClassForm({ open, editData, onClose }: Props) {
     <>
       <FormDialog
         isOpen={open}
+        isEditMode={editMode}
         title="Add Class"
         subtitle="Add class form subtitle here"
         onClose={handleClose}

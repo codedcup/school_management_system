@@ -15,12 +15,14 @@ type Props = {
     children?: any,
     size?: "sm" | "lg"
     isOpen: boolean,
+    isEditMode?: boolean,
     onClose?: () => void,
     onSubmit?: () => void,
 }
 
 export default function FormDialog({
     isOpen,
+    isEditMode,
     title,
     subtitle,
     size = "sm",
@@ -58,7 +60,7 @@ export default function FormDialog({
                         Cancel
                     </Button>
                     <Button className="ml-auto" onClick={onSubmit}>
-                        Submit
+                        { isEditMode ? "Update" : "Submit"}
                     </Button>
                 </div>
             </DialogFooter>

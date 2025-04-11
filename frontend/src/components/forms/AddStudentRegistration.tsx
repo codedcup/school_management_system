@@ -63,6 +63,7 @@ const AddStudentRegistration = ({ open, editData, onClose }: Props) => {
   };
 
   const handleClose = () => {
+    // kjscbsdk
     setFormData({
       name: "",
       studentId: "",

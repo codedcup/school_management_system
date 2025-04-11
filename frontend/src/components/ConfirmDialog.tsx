@@ -26,7 +26,7 @@ export default function ConfirmDialog({ open, title, message, onCancel, onAccept
         <DialogFooter>
           <Button
             variant="text"
-            color="red"
+            // color="red"
             onClick={onCancel}
             className="mr-1"
           >

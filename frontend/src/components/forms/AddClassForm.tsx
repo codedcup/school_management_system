@@ -8,7 +8,7 @@ import { Option } from "@material-tailwind/react";
 
 type Props = {
   open: boolean,
-  editData?: { class: string, status: statusOptions },
+  editData?: { _id: string, class: string, status: statusOptions },
   onClose: () => void
 }
 
@@ -42,6 +42,20 @@ export default function AddClassForm({ open, editData, onClose }: Props) {
     }
   );
 
+  const updateClassMutation = useApiMutation<any, { _id: string, class: string, status: statusOptions }>(
+    ADD_NEW_CLASS + "/" + editData?._id,
+    'PUT',
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        handleClose();
+      },
+      onError: () => {
+        
+      },
+    }
+  );
+
   const handleClose = () => {
     setClassName("");
     setClassError("");
@@ -52,7 +66,10 @@ export default function AddClassForm({ open, editData, onClose }: Props) {
 
   const handleSubmit = () => {
     if (validate()) {
-      addClassMutation.mutate({class: className, status: status});
+      if(editMode && editData)
+        updateClassMutation.mutate({_id: editData._id, class: className, status: status});
+      else
+        addClassMutation.mutate({class: className, status: status});
     }
   }
 

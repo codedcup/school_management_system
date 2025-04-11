@@ -19,7 +19,7 @@ const InputField: FC<Props> = ({
   placeholder = "",
   name,
   error,
-  value,
+  value ="",
   onChange = () => {},
 }) => {
 

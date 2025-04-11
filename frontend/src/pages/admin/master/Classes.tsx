@@ -4,13 +4,15 @@ import Table from "../../../components/Table";
 import { useState } from "react";
 import AddClassForm from "../../../components/forms/AddClassForm";
 import { ClassResponseType } from "../../../utilities/types";
-import { GET_ALL_CLASSES } from "../../../api/endpoints";
-import { useApiQuery } from "../../../api/apiService";
+import { ADD_NEW_CLASS, GET_ALL_CLASSES } from "../../../api/endpoints";
+import { useApiMutation, useApiQuery } from "../../../api/apiService";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 
 export default function Classes() {
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [editData, setEditData] = useState<any>(undefined);
+    const [deleteData, setDeleteData] = useState<any>(undefined);
 
     const { data: tableData, error, isLoading } = useApiQuery<any>(
         ['classes'],
@@ -51,6 +53,16 @@ export default function Classes() {
             setEditData(row);
             setIsOpen(true);
         }
+
+        if (action == "delete") {
+            setDeleteData(row);
+        }
+    }
+
+    const handleDelete = () => {
+        //  mutation call here
+        setDeleteData(undefined);
+        alert("Delete confirm clicked");
     }
 
     return (
@@ -84,6 +96,15 @@ export default function Classes() {
                 open={isOpen}
                 onClose={() => setIsOpen(!isOpen)}
             />
+
+            <ConfirmDialog 
+                open={deleteData} 
+                title="Delete" 
+                message="Are you sure to delete this data?"
+                onCancel={() => setDeleteData(undefined)}
+                onAccept={handleDelete}>
+
+            </ConfirmDialog>
         </div>
     )
 }

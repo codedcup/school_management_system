@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useApiMutation, useApiQuery } from "../../api/apiService";
-import { ADD_CLASS_SUBJECT_ASSIGNMENT, GET_ALL_CLASSES, GET_ALL_SECTIONS, GET_ALL_STREAMS, GET_ALL_SUBJECTS } from "../../api/endpoints";
+import { ADD_NEW_CLASS_SUBJECT_ASSIGNMENT, GET_ALL_CLASSES, GET_ALL_SECTIONS, GET_ALL_STREAMS, GET_ALL_SUBJECTS } from "../../api/endpoints";
 import InputField from "../inputField";
 import FormDialog from "../FormDialog";
 import { Option } from "@material-tailwind/react";
@@ -29,7 +29,7 @@ export default function AddClassSubjectAssignment({ open, editData, onClose }: P
   const { data: subjects = [] } = useApiQuery<any>(['subject'], GET_ALL_SUBJECTS);
 
   const mutation = useApiMutation<any, typeof formData>(
-    ADD_CLASS_SUBJECT_ASSIGNMENT,
+    ADD_NEW_CLASS_SUBJECT_ASSIGNMENT,
     'POST',
     {
       onSuccess: () => handleClose(),

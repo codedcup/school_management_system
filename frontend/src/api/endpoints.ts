@@ -18,12 +18,6 @@ export const ADD_NEW_DESIGNATION = "/designation";
 
 export const GET_ALL_STUDENTS = "/student";
 export const ADD_NEW_STUDENT = "/student";
-//export const GET_ALL_CLASS_SUBJECT_ASSIGNMENTS = "/class-subject-assignment";
 
-
-
-export const GET_ALL_CLASS_SUBJECT_ASSIGNMENTS = "/class-subject-assignment";
-export const ADD_NEW_CLASS_SUBJECT_ASSIGNMENT = "/class-subject-assignment";
-
-
-
+export const GET_ALL_CLASS_SUBJECT_ASSIGNMENTS = "/assignment";
+export const ADD_NEW_CLASS_SUBJECT_ASSIGNMENT = "/assignment";

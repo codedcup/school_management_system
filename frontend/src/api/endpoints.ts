@@ -21,3 +21,9 @@ export const ADD_NEW_STUDENT = "/student";
 
 export const GET_ALL_CLASS_SUBJECT_ASSIGNMENTS = "/assignment";
 export const ADD_NEW_CLASS_SUBJECT_ASSIGNMENT = "/assignment";
+
+export const GET_ALL_TEACHERS = "/teacher";
+export const ADD_NEW_TEACHER = "/teacher";
+
+export const GET_ALL_CLASS_TEACHER_ASSIGNMENTS = "/classTeacher";
+export const ADD_NEW_CLASS_TEACHER_ASSIGNMENT = "/classTeacher";

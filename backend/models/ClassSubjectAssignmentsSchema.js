@@ -13,7 +13,7 @@ const ClassSubjectAssignments = new mongoose.Schema({
     },
     streamId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "streans",
+        ref: "streams",
         required: true
     },
     subjectId: {

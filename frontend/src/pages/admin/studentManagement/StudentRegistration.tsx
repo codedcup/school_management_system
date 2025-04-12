@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import ActionBar from "../../../components/ActionBar";
 import Table from "../../../components/Table";
 import { PlusIcon, PencilIcon } from "@heroicons/react/24/outline";
@@ -11,16 +11,23 @@ export default function StudentRegistration() {
   const [isOpen, setIsOpen] = useState(false);
   const [editData, setEditData] = useState<StudentResponseType | null>(null);
 
-  const { data: tableData, error, isLoading } = useApiQuery<StudentResponseType[]>(
+  const { data: tableData, isLoading } = useApiQuery<StudentResponseType[]>(
     ["students"],
     GET_ALL_STUDENTS
   );
+
+  const transformedData = useMemo(() => {
+    return tableData?.map((item) => ({
+      ...item,
+      className: item.class?.classId?.class || "—",
+    }));
+  }, [tableData]);
 
   const columns = [
     { label: "Name", key: "name" },
     { label: "Student ID", key: "studentId" },
     { label: "Roll No.", key: "rollNum" },
-    { label: "Class", key: "class.classId.class" },
+    { label: "Class", key: "className" },
     { label: "Phone", key: "phone" },
     { label: "Email", key: "email" },
     { label: "Status", key: "status" },
@@ -58,12 +65,13 @@ export default function StudentRegistration() {
       />
 
       <Table
-        data={tableData}
+        data={transformedData}
         columns={columns}
         searchable
         selectable
         actions={actions}
         onAction={handleAction}
+        loading={isLoading}
       />
 
       <AddStudentRegistration

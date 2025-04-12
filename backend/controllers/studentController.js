@@ -1,5 +1,5 @@
 const Student = require('../models/studentSchema');
-
+const { hashPassword } = require('../utils/cryptoUtil');
 // GET all students
 exports.getAll = async (req, res) => {
     try {
@@ -25,6 +25,7 @@ exports.getById = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const { password, ...rest } = req.body;
+        //console.log(req.body)
 
         // Hash the password before saving
         const hashedPassword = await hashPassword(password);
@@ -34,7 +35,8 @@ exports.create = async (req, res) => {
             password: hashedPassword
         });
 
-        const saved = await newStudent.save();
+
+        const saved = await newTeacher.save();
         res.status(201).json(saved);
     } catch (error) {
         res.status(400).json({ error: 'Invalid data' });

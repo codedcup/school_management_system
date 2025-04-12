@@ -16,6 +16,11 @@ const AddDesignationForm = ({ open, editData, onClose }) => {
       setEditMode(true);
       setDesignationName(editData.designation);
       setStatus(editData.status);
+    } else {
+      setEditMode(false);
+      setDesignationName("");
+      setStatus("active");
+      setError("");
     }
   }, [editData]);
 
@@ -25,6 +30,15 @@ const AddDesignationForm = ({ open, editData, onClose }) => {
     {
       onSuccess: () => handleClose(),
       onError: () => console.error("Error adding designation"),
+    }
+  );
+
+  const updateDesignationMutation = useApiMutation(
+    `${ADD_NEW_DESIGNATION}/${editData?._id}`,
+    "PUT",
+    {
+      onSuccess: () => handleClose(),
+      onError: () => console.error("Error updating designation"),
     }
   );
 
@@ -42,14 +56,20 @@ const AddDesignationForm = ({ open, editData, onClose }) => {
       return;
     }
 
-    addDesignationMutation.mutate({ designation: designationName, status });
+    const payload = { designation: designationName, status };
+
+    if (editMode && editData?._id) {
+      updateDesignationMutation.mutate(payload);
+    } else {
+      addDesignationMutation.mutate(payload);
+    }
   };
 
   return (
     <FormDialog
       isOpen={open}
-      title="Add Designation"
-      subtitle="Add designation form subtitle here"
+      title={editMode ? "Edit Designation" : "Add Designation"}
+      subtitle={editMode ? "Update designation details" : "Add designation form subtitle here"}
       onClose={handleClose}
       onSubmit={handleSubmit}
     >

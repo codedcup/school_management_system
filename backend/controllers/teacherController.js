@@ -1,5 +1,5 @@
 const Teacher = require('../models/teacherSchema');
-
+const { hashPassword } = require('../utils/cryptoUtil');
 // GET all teachers
 exports.getAll = async (req, res) => {
     try {

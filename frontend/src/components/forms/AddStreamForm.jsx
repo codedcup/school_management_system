@@ -16,6 +16,11 @@ const AddStreamForm = ({ open, editData, onClose }) => {
       setEditMode(true);
       setStreamName(editData.stream);
       setStatus(editData.status);
+    } else {
+      setEditMode(false);
+      setStreamName("");
+      setStatus("active");
+      setError("");
     }
   }, [editData]);
 
@@ -25,6 +30,15 @@ const AddStreamForm = ({ open, editData, onClose }) => {
     {
       onSuccess: () => handleClose(),
       onError: () => console.error("Error adding stream"),
+    }
+  );
+
+  const updateStreamMutation = useApiMutation(
+    `${ADD_NEW_STREAM}/${editData?._id}`,
+    "PUT",
+    {
+      onSuccess: () => handleClose(),
+      onError: () => console.error("Error updating stream"),
     }
   );
 
@@ -42,14 +56,20 @@ const AddStreamForm = ({ open, editData, onClose }) => {
       return;
     }
 
-    addStreamMutation.mutate({ stream: streamName, status });
+    const payload = { stream: streamName, status };
+
+    if (editMode && editData?._id) {
+      updateStreamMutation.mutate(payload);
+    } else {
+      addStreamMutation.mutate(payload);
+    }
   };
 
   return (
     <FormDialog
       isOpen={open}
-      title="Add Stream"
-      subtitle="Add stream form subtitle here"
+      title={editMode ? "Edit Stream" : "Add Stream"}
+      subtitle={editMode ? "Update stream details" : "Add stream form subtitle here"}
       onClose={handleClose}
       onSubmit={handleSubmit}
     >

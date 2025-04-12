@@ -16,6 +16,8 @@ const AddSectionForm = ({ open, editData, onClose }) => {
       setEditMode(true);
       setSectionName(editData.section);
       setStatus(editData.status);
+    } else {
+      setEditMode(false);
     }
   }, [editData]);
 
@@ -25,6 +27,15 @@ const AddSectionForm = ({ open, editData, onClose }) => {
     {
       onSuccess: () => handleClose(),
       onError: () => console.error("Error adding section"),
+    }
+  );
+
+  const updateSectionMutation = useApiMutation(
+    `${ADD_NEW_SECTION}/${editData?._id}`,
+    "PUT",
+    {
+      onSuccess: () => handleClose(),
+      onError: () => console.error("Error updating section"),
     }
   );
 
@@ -42,14 +53,20 @@ const AddSectionForm = ({ open, editData, onClose }) => {
       return;
     }
 
-    addSectionMutation.mutate({ section: sectionName, status });
+    const payload = { section: sectionName, status };
+
+    if (editMode && editData?._id) {
+      updateSectionMutation.mutate(payload);
+    } else {
+      addSectionMutation.mutate(payload);
+    }
   };
 
   return (
     <FormDialog
       isOpen={open}
-      title="Add Section"
-      subtitle="Add section form subtitle here"
+      title={editMode ? "Edit Section" : "Add Section"}
+      subtitle={editMode ? "Update section details" : "Add section form subtitle here"}
       onClose={handleClose}
       onSubmit={handleSubmit}
     >

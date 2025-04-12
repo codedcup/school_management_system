@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import ActionBar from "../../../components/ActionBar";
 import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Table from "../../../components/Table";
@@ -8,19 +8,34 @@ import { GET_ALL_CLASS_SUBJECT_ASSIGNMENTS } from "../../../api/endpoints";
 import { ClassSubjectAssignmentType } from "../../../utilities/types";
 
 export default function ClassSubjectAssignment() {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [editData, setEditData] = useState<ClassSubjectAssignmentType | null>(null);
 
-  const { data: tableData, error, isLoading } = useApiQuery<ClassSubjectAssignmentType[]>(
-    ["class-subject-assignments"],
+  const {
+    data: tableData,
+    error,
+    isLoading,
+  } = useApiQuery<ClassSubjectAssignmentType[]>(
+    ["assignment"],
     GET_ALL_CLASS_SUBJECT_ASSIGNMENTS
   );
 
+  // Optional: transform data to flatten nested fields (safe fallback)
+  const transformedData = useMemo(() => {
+    return tableData?.map((item) => ({
+      ...item,
+      className: item.classId?.class || "—",
+      sectionName: item.sectionId?.section || "—",
+      streamName: item.streamId?.stream || "—",
+      subjectName: item.subjectId?.subject || "—",
+    }));
+  }, [tableData]);
+
   const columns = [
-    { label: "Class", key: "classId.class" },
-    { label: "Section", key: "sectionId.section" },
-    { label: "Stream", key: "streamId.stream" },
-    { label: "Subject", key: "subjectId.subject" },
+    { label: "Class", key: "className" },
+    { label: "Section", key: "sectionName" },
+    { label: "Stream", key: "streamName" },
+    { label: "Subject", key: "subjectName" },
     { label: "Subject Code", key: "subjectCode" },
     { label: "Status", key: "status" },
   ];
@@ -62,12 +77,13 @@ export default function ClassSubjectAssignment() {
       />
 
       <Table
-        data={tableData}
+        data={transformedData}
         columns={columns}
-        searchable={true}
-        selectable={true}
+        searchable
+        selectable
         actions={actions}
         onAction={handleAction}
+        loading={isLoading}
       />
 
       <AddClassSubjectForm

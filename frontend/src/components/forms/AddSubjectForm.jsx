@@ -16,6 +16,11 @@ const AddSubjectForm = ({ open, editData, onClose }) => {
       setEditMode(true);
       setSubjectName(editData.subject);
       setStatus(editData.status);
+    } else {
+      setEditMode(false);
+      setSubjectName("");
+      setStatus("active");
+      setError("");
     }
   }, [editData]);
 
@@ -25,6 +30,15 @@ const AddSubjectForm = ({ open, editData, onClose }) => {
     {
       onSuccess: () => handleClose(),
       onError: () => console.error("Error adding subject"),
+    }
+  );
+
+  const updateSubjectMutation = useApiMutation(
+    `${ADD_NEW_SUBJECT}/${editData?._id}`,
+    "PUT",
+    {
+      onSuccess: () => handleClose(),
+      onError: () => console.error("Error updating subject"),
     }
   );
 
@@ -42,14 +56,20 @@ const AddSubjectForm = ({ open, editData, onClose }) => {
       return;
     }
 
-    addSubjectMutation.mutate({ subject: subjectName, status });
+    const payload = { subject: subjectName, status };
+
+    if (editMode && editData?._id) {
+      updateSubjectMutation.mutate(payload);
+    } else {
+      addSubjectMutation.mutate(payload);
+    }
   };
 
   return (
     <FormDialog
       isOpen={open}
-      title="Add Subject"
-      subtitle="Add subject form subtitle here"
+      title={editMode ? "Edit Subject" : "Add Subject"}
+      subtitle={editMode ? "Update subject details" : "Add subject form subtitle here"}
       onClose={handleClose}
       onSubmit={handleSubmit}
     >
